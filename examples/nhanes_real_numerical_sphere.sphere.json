@@ -1,0 +1,13 @@
+{
+  "tool": "sphere generate",
+  "version": "0.1.0",
+  "generated_at": "2026-06-05T05:48:09Z",
+  "real": "nhanes_real_numerical.csv",
+  "seed": 42,
+  "k": 2,
+  "theta": 0.5235987755982988,
+  "delta": 0.08726646259971647,
+  "mix_prob": 0.75,
+  "rows": 4899,
+  "cols": 18
+}

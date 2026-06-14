@@ -1,0 +1,122 @@
+{
+  "name": "sphere",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SPHERE: Synthetic data generation and analysis tool",
+  "author": "Zihuai He, Stanford University",
+  "license": "UNLICENSED",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "env -u ELECTRON_RUN_AS_NODE vite",
+    "build": "tsc --noEmit && vite build && ELECTRON_RUN_AS_NODE=1 electron scripts/bytenode-compile.cjs",
+    "start": "env -u ELECTRON_RUN_AS_NODE electron .",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:all": "bash scripts/dist-all.sh"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.93.0",
+    "@aws-sdk/client-s3": "^3.1042.0",
+    "@aws-sdk/s3-request-presigner": "^3.1042.0",
+    "bytenode": "^1.5.7",
+    "papaparse": "^5.4.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/papaparse": "^5.3.14",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3",
+    "javascript-obfuscator": "^5.4.3",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vite-plugin-electron": "^0.28.6",
+    "vite-plugin-electron-renderer": "^0.14.5"
+  },
+  "build": {
+    "appId": "edu.stanford.sphere",
+    "productName": "SPHERE",
+    "copyright": "Copyright © 2026 Zihuai He, Stanford University. All rights reserved.",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**",
+      "dist-electron/**"
+    ],
+    "extraResources": [
+      {
+        "from": "python-sidecar/dist/sphere-engine",
+        "to": "sidecar/sphere-engine",
+        "filter": [
+          "**/*",
+          "!**/_internal/sklearn/datasets/tests/**",
+          "!**/_internal/sklearn/datasets/data/*.gz"
+        ]
+      },
+      {
+        "from": "examples",
+        "to": "examples",
+        "filter": [
+          "**/*.csv"
+        ]
+      }
+    ],
+    "mac": {
+      "identity": "Zihuai He (AMZ577V563)",
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": "arm64"
+        }
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "signIgnore": [
+        "\\.gz$",
+        "\\.arff$",
+        "\\.exe$",
+        "\\.dll$",
+        "\\.orc$",
+        "\\.avro$",
+        "\\.pdb$",
+        "\\.pkl$",
+        "\\.npy$",
+        "\\.npz$",
+        "zoneinfo"
+      ],
+      "notarize": {
+        "teamId": "AMZ577V563"
+      },
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "writeUpdateInfo": false,
+      "background": "build/dmg-background.png",
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "contents": [
+        {
+          "x": 150,
+          "y": 210,
+          "type": "file"
+        },
+        {
+          "x": 390,
+          "y": 210,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

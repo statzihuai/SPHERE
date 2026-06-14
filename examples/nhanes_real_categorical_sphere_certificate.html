@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>SPHERE Certificate — nhanes_real_categorical_sphere.csv</title>
+<style>
+  :root {
+    --bg: #faf7f2; --surface: #fff; --surface-2: #f8f1e2;
+    --border: #e6dfd0; --text: #1a1817; --muted: #7a7468;
+    --cardinal: #8C1515; --sage: #3f4a2e; --gold: #a87d3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Text', 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.55;
+  }
+  .doc { max-width: 880px; margin: 0 auto; }
+  header { display: flex; align-items: center; gap: 18px; padding-bottom: 16px; border-bottom: 2px solid var(--cardinal); }
+  header svg { width: 56px; height: 56px; flex-shrink: 0; }
+  header h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  header .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  section { margin-top: 22px; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  section h2 { margin: 0 0 10px 0; font-size: 14px; font-weight: 600; letter-spacing: 0.02em; color: var(--cardinal); text-transform: uppercase; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { width: 200px; color: var(--muted); font-weight: 500; }
+  td { color: var(--text); font-family: 'SF Mono', Menlo, monospace; word-break: break-all; }
+  td.hint { color: var(--muted); font-family: -apple-system, sans-serif; font-size: 11px; line-height: 1.45; word-break: normal; }
+  .muted { color: var(--muted); font-style: italic; font-family: inherit; }
+  .blurb { margin: 0 0 12px 0; font-size: 12px; color: var(--muted); line-height: 1.55; }
+  .scores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 8px; }
+  .scores.three { grid-template-columns: repeat(3, 1fr); }
+  .score { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .score .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+  .score .val { font-size: 22px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .score .sub { font-size: 10px; color: var(--muted); font-family: 'SF Mono', Menlo, monospace; margin-top: 3px; }
+  .score .desc { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+  .composite { display: flex; justify-content: space-between; align-items: baseline; padding-top: 8px; }
+  .composite .v { font-size: 20px; font-weight: 600; color: var(--cardinal); font-variant-numeric: tabular-nums; }
+  .callout { margin-top: 12px; background: rgba(168,125,58,0.10); border-left: 3px solid var(--gold); border-radius: 4px; padding: 10px 14px; font-size: 11px; line-height: 1.55; color: var(--text); }
+  .callout strong { color: var(--gold); font-weight: 600; }
+  .callout em { color: var(--sage); font-style: italic; }
+  footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--border); color: var(--muted); font-size: 11px; }
+  .seal { display: inline-block; padding: 4px 10px; border: 1px solid var(--sage); color: var(--sage); border-radius: 4px; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+  @media print { body { background: white; padding: 0; } section { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="doc">
+  <header>
+    <svg viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="52" fill="none" stroke="#b8945a" stroke-width="1.2" stroke-dasharray="2 4"/>
+      <circle cx="48" cy="60" r="26" fill="none" stroke="#8C1515" stroke-width="2.8"/>
+      <circle cx="72" cy="60" r="26" fill="none" stroke="#3f4a2e" stroke-width="2.8"/>
+      <circle cx="48" cy="54" r="1.8" fill="#8C1515"/>
+      <circle cx="72" cy="54" r="1.8" fill="#3f4a2e"/>
+    </svg>
+    <div>
+      <h1>SPHERE Synthetic Data Certificate</h1>
+      <div class="sub">Issued 2026-06-11T23:42:05.007Z · <span class="seal">SPHERE-generated</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>Source data (real)</h2>
+    <p class="blurb">The original dataset that was used as input to SPHERE. The SHA-256 hash uniquely identifies the exact bytes evaluated.</p>
+    <table>
+      <tr><th>file</th><td>nhanes_real_categorical.csv</td><td class="hint">Source CSV file name.</td></tr>
+      <tr><th>path</th><td>/Applications/SPHERE.app/Contents/Resources/examples/nhanes_real_categorical.csv</td><td class="hint">Absolute filesystem path at evaluation time.</td></tr>
+      <tr><th>size</th><td>606.2 KB</td><td class="hint">Disk size of the CSV.</td></tr>
+      <tr><th>modified</th><td>2026-06-05T05:51:32.884Z</td><td class="hint">Filesystem mtime — when the file was last written.</td></tr>
+      <tr><th>SHA-256</th><td>191f37e5c071590c7385c3a26ceb127e42da746d3bc6dbf795aa4110d3498ef6</td><td class="hint">Tamper-evident fingerprint. Re-hashing the same file yields the same digest.</td></tr>
+      <tr><th>rows</th><td>4899</td><td class="hint">Number of records in the source data.</td></tr>
+      <tr><th>columns</th><td>18 (13 numeric, 5 categorical)</td><td class="hint">Original column count and type breakdown. Categoricals are expanded to ±1 indicator columns for fidelity scoring.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Synthetic data</h2>
+    <p class="blurb">The synthetic dataset produced by SPHERE (or supplied by the user). Same fingerprint convention as the source.</p>
+    <table>
+      <tr><th>file</th><td>nhanes_real_categorical_sphere.csv</td><td class="hint">Synthetic CSV file name.</td></tr>
+      <tr><th>path</th><td>/Applications/SPHERE.app/Contents/Resources/examples/nhanes_real_categorical_sphere.csv</td><td class="hint">Absolute filesystem path at evaluation time.</td></tr>
+      <tr><th>size</th><td>1.34 MB</td><td class="hint">Disk size of the CSV.</td></tr>
+      <tr><th>modified</th><td>2026-06-11T23:38:42.677Z</td><td class="hint">Filesystem mtime — when the file was last written.</td></tr>
+      <tr><th>SHA-256</th><td>3b8d2992faded539e41b10e9f6588e508e4be55f1053ae151f08f3a97877e367</td><td class="hint">Tamper-evident fingerprint of the synthetic file.</td></tr>
+      <tr><th>rows</th><td>4899</td><td class="hint">Number of records in the synthetic data.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Generation method</h2>
+    <p class="blurb">The synthetic CSV was generated by SPHERE in this app. The parameters below were captured at generation time.</p>
+    <table><tr><th>method</th><td><strong>SPHERE</strong> (this app)</td><td class="hint">The synthetic CSV was generated in this app via the Generate tab; the parameters below were captured at generation time.</td></tr><tr><th>seed</th><td><em>random</em></td><td class="hint">Integer seed for reproducible generation. Empty = a fresh random draw was used.</td></tr><tr><th>generated at</th><td>2026-06-11T23:38:42.899Z</td><td class="hint">Wall-clock timestamp when SPHERE was applied in this app.</td></tr></table>
+  </section>
+
+  <section>
+    <h2>Fidelity</h2>
+    <p class="blurb">How statistically close is the synthetic to the real data? All four metrics are computed on the encoded matrix (categoricals → ±1 indicator columns). Higher = better; 100 = identical.</p>
+    <div class="composite">
+      <span>Composite score</span><span class="v">95.51 / 100</span>
+    </div>
+    <div class="scores">
+      <div class="score"><div class="label">Δ mean</div><div class="val">100.00</div><div class="sub">raw Δ = 1.72e-12%</div><div class="desc">Max column-mean deviation. SPHERE preserves column means exactly → score should be ~100.</div></div>
+      <div class="score"><div class="label">Δ variance</div><div class="val">100.00</div><div class="sub">raw Δ = 4.09e-12%</div><div class="desc">Max column-variance deviation. SPHERE preserves column variances exactly → score should be ~100.</div></div>
+      <div class="score"><div class="label">Δ correlation</div><div class="val">86.69</div><div class="sub">raw Δ = 1.33e+1%</div><div class="desc">Frobenius distance between the two correlation matrices. Preserved exactly for fully numeric data; some drift when categoricals are present (see note below).</div></div>
+      <div class="score"><div class="label">Marginals (KS)</div><div class="val">95.34</div><div class="sub">KS = 0.047</div><div class="desc">Mean column-wise Kolmogorov–Smirnov statistic. Catches per-column distribution shifts that means and variances miss.</div></div>
+    </div>
+    <div class="callout"><strong>Note on correlation with categorical variables.</strong> SPHERE preserves correlations exactly for fully numeric data. When categorical columns are present, small correlation drift may occur due to encoding and decoding of category labels. <strong>For exact correlation preservation</strong>, pre-encode categoricals as ±1 indicator columns in the source CSV (one column per category, +1 = belongs, −1 = does not) and treat them as numeric.</div>
+  </section>
+
+  <section>
+    <h2>Privacy</h2>
+    <p class="blurb">How resistant is the synthetic to three GDPR-aligned re-identification attacks (Anonymeter). Each score normalises the raw attack rate against two anchors: real-vs-real (max-risk baseline) and real-vs-column-shuffled (min-risk baseline). Higher = more private; 100 = no better than column-shuffle.</p>
+    <div class="composite">
+      <span>Composite score</span><span class="v">97.16 / 100</span>
+    </div>
+    <div class="scores three">
+      <div class="score"><div class="label">Singling-out</div><div class="val">100.00</div><div class="sub">real 0.996 · shuf 0.198 · synth 0.151</div><div class="desc">Can an attacker isolate a single individual using a query built from the synthetic data? The attacker picks 1–3 attribute values from a synthetic row and counts unique matches in real.</div></div>
+      <div class="score"><div class="label">Linkability</div><div class="val">96.99</div><div class="sub">real 0.996 · shuf 0.006 · synth 0.036</div><div class="desc">If an attacker knows half of an individual’s attributes (set A), can the synthetic data tell them the other half (set B)? k-NN-based linking across a random column split.</div></div>
+      <div class="score"><div class="label">Inference</div><div class="val">94.49</div><div class="sub">real 0.996 · shuf 0.060 · synth 0.112</div><div class="desc">Can an attacker who knows all of an individual’s attributes except one (&quot;the secret&quot;) predict that secret using the synthetic data as training? Averaged over multiple secret-column choices.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Evaluation parameters</h2>
+    <p class="blurb">Parameters supplied to the evaluator. The engine name identifies the underlying implementation; <code>seed</code> determines the Monte-Carlo realisation.</p>
+    <table>
+      <tr><th>engine</th><td>anonymeter</td><td class="hint">Underlying evaluator. anonymeter-v1.0.1 = bundled Python sidecar; ts-fallback = built-in TS evaluator.</td></tr>
+      <tr><th>elapsed</th><td>11.03 s</td><td class="hint">Wall-clock time for the full evaluation (3 metrics × 3 baselines).</td></tr>
+      <tr><th>n_attacks</th><td>500</td><td class="hint">Monte-Carlo attack draws per metric. Higher = tighter confidence interval, slower run.</td></tr><tr><th>n_aux_cols (Linkability)</th><td>20</td><td class="hint">Number of feature columns drawn for the Linkability A/B split (split half/half). Anonymeter convention: 20.</td></tr><tr><th>n_neighbors (Linkability)</th><td>1</td><td class="hint">k for the Linkability k-NN intersect test. Anonymeter default 1; larger k = more permissive linking.</td></tr><tr><th>n_secrets (Inference)</th><td>5</td><td class="hint">Number of secret-column choices averaged for the Inference attack. Higher = more stable score, slower run.</td></tr><tr><th>n_atk_cap</th><td>2000</td><td class="hint">Subsample cap on the attacker input rows passed to Anonymeter. Anonymeter convention: min(2000, n).</td></tr><tr><th>seed</th><td>1693953912 (random)</td><td class="hint">Integer seed for reproducible evaluation. (random) = fresh Monte-Carlo realisation each run.</td></tr>
+    </table>
+  </section>
+
+  <footer>
+    Each privacy score normalizes the attack rate against two anchors:
+    real-vs-real (max-leak) and real-vs-column-shuffled (min-leak), giving
+    a 0–100 score where 100 = no better than column-shuffle.
+    Fidelity scores are 100 minus the relative deviation, computed on the
+    ±1-encoded matrix (categoricals → indicator columns).
+    The SHA-256 hashes above identify the exact CSV bytes evaluated;
+    re-running on the same files with the same evaluator parameters and
+    seed reproduces the scores within Monte-Carlo noise.
+  </footer>
+</div>
+</body>
+</html>
