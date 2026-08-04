@@ -65,3 +65,9 @@ sphere evaluate real.csv synth.csv
 ## License
 
 Copyright © 2026 Zihuai He, Stanford University. All rights reserved.
+
+Free for non-commercial academic research and evaluation; commercial use
+requires a separate written license. A patent application relating to the
+underlying method is pending. See [LICENSE](LICENSE).
+
+For licensing inquiries: zihuai@stanford.edu
