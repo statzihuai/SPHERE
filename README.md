@@ -24,8 +24,6 @@ Download the latest release from the [Releases](https://github.com/statzihuai/SP
 
 - macOS 12 (Monterey) or later
 - Apple Silicon (M1 / M2 / M3 / M4)
-- A SPHERE license key — contact [zihuai@stanford.edu](mailto:zihuai@stanford.edu) or visit [sphere.stanford.edu](https://sphere.stanford.edu)
-- An [Anthropic API key](https://console.anthropic.com) for AI-powered analysis (optional)
 
 ---
 
@@ -33,7 +31,7 @@ Download the latest release from the [Releases](https://github.com/statzihuai/SP
 
 1. Download `SPHERE-0.1.0-arm64.dmg` from the [latest release](https://github.com/statzihuai/SPHERE/releases/latest)
 2. Open the DMG and drag **SPHERE** to your Applications folder
-3. Launch SPHERE and enter your license key when prompted
+3. Launch SPHERE
 
 ---
 
