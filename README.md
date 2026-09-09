@@ -29,6 +29,8 @@ SPHERE AI is powered by a cloud model, so it is worth being exact about what it 
 
 **Results are sent only if you ask for a written summary, and only after you have seen them.** SPHERE shows you the exact text that will be sent and waits for you to approve it. Aggregate statistics and figures are included; individual records from your real data are not.
 
+**Your conversation is routed through SPHERE and stored.** The AI features do not talk to Anthropic directly — requests go through SPHERE's proxy so usage can be metered, and the conversation is retained with your account. This applies whether you use SPHERE credits or your own Anthropic API key. Generation, evaluation and certification make no network calls at all.
+
 The [Privacy Handbook](HANDBOOK.md) documents this in full, including a **Limits you should know about** section stating plainly what the design does *not* guarantee.
 
 ---

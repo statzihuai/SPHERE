@@ -10,7 +10,13 @@ SPHERE (Synthetic Privacy-preserving Honest Evaluation and Release Engine) is th
 4. **Post to Catalog** — list the dataset in the SPHERE World public directory
 5. **Analyse with AI** — use Claude to develop and run analyses on the synthetic data, then apply the resulting code to your real dataset locally
 
-All five steps are governed by one rule: **real data never leaves your machine.**
+One rule governs all five steps: **your real data never leaves your machine.**
+
+Other things do leave, and you should know which. You choose when to upload a synthetic
+file (step 3) and when to post catalog metadata (step 4). And whenever you use the AI
+features (step 5), your conversation is routed through SPHERE's own servers and stored
+there — whether you are spending SPHERE credits or using your own Anthropic key. That is
+documented in *What SPHERE's servers receive* below.
 
 ---
 
@@ -18,17 +24,37 @@ All five steps are governed by one rule: **real data never leaves your machine.*
 
 Understanding the privacy boundaries is central to using SPHERE confidently. This section covers all five panels at once so you know exactly what stays local and what leaves.
 
-### 100% Local — Never Leaves Your Computer
+### What Stays on Your Computer
 
 | Item | Why it stays local |
 |---|---|
-| Your original (real) data | Never read beyond your local disk. No upload, no transmission, no copy. |
+| Your original (real) data | Read only by SPHERE's own code on this Mac — to synthesise the twin, hash it and score it. Never uploaded, never transmitted, never sent to the model. |
 | Synthesis algorithm | Runs entirely in the app process on your machine. |
 | Evaluation computation | All statistical comparisons (fidelity, privacy tests) run locally. |
 | SPHERE certificate | Generated locally, saved as an HTML file on your disk. |
-| API keys (Claude, Dropbox, Zenodo) | Stored encrypted via macOS Keychain. Never sent to SPHERE's servers. |
+| Dropbox and Zenodo tokens | Stored encrypted via macOS Keychain. Used only to talk to those services directly. Never sent to SPHERE's servers. |
+| Your Anthropic API key | Stored encrypted via macOS Keychain. It is **forwarded through SPHERE's server** on each AI request so usage can be metered — it passes through and is not stored there. |
 | Column names, dimensions & scores used in AI auto-fill | Derived from the **synthetic** file only — not the real one. |
 | analysis.py and all session figures | Written and executed entirely inside an isolated local sandbox. |
+
+### What SPHERE's Servers Receive
+
+The AI features do not talk to Anthropic directly. Every request is routed through SPHERE's
+own proxy at `api.sphereworld.ai`, which is how usage is metered against your account. This
+applies whether you are spending SPHERE credits **or** using your own Anthropic key.
+
+That server receives, and **retains**:
+
+- **The full conversation** — every message you send and every reply the model returns,
+  including tool results and any real-data results you approved sending for the report.
+- **Usage metadata** — token counts, model, timestamps, and your account identity.
+
+It does **not** receive your real data, your real file's path, or your Anthropic key in
+storable form (the key is forwarded upstream on each request and not kept).
+
+Sign-in is required to use the app, so this applies to all AI use. If your work is governed
+by an agreement that forbids conversation content leaving your institution, use the
+Generate, Evaluate and Share tabs — those make no network calls to SPHERE at all.
 
 ### What Is Uploaded (Synthetic Data Only)
 
@@ -227,7 +253,7 @@ SPHERE AI lets you build a rigorous data analysis by chatting with Claude — us
 #### Setup
 
 - **Anthropic API key** — obtained at `console.anthropic.com/settings/keys`. Entered once, stored encrypted via macOS Keychain.
-- **Model** — Claude Opus 4.7 (most capable), Sonnet 4.6 (balanced), Haiku 4.5 (fastest). Changed in the Settings panel.
+- **Model** — Claude Opus 5 (most capable), Fable 5 (extended thinking), Sonnet 5 (balanced), Haiku 4.5 (fastest). Changed in the Settings panel.
 
 #### How the session works
 
@@ -312,7 +338,7 @@ This distinction is shown on dataset cards in both the app and the catalog.
 Your real data (CSV)
         │
         ▼
-  [SPHERE App — local only]
+  [SPHERE App — on your Mac]
         │
         ├─► Synthesis algorithm ─────────────────────► Synthetic CSV (saved locally)
         │                                                      │
@@ -340,13 +366,18 @@ Your real data (CSV)
 ## Frequently Asked Questions
 
 **Q: Does SPHERE ever see my real data?**
-No. Your real data is read locally by the app and never transmitted to SPHERE's servers, Anthropic, Dropbox, Zenodo, or any other service.
+Your real data is read on this Mac by SPHERE's own code — to build the twin, hash it and
+score it — and is never transmitted to SPHERE's servers, Anthropic, Dropbox, Zenodo or any
+other service. Your *conversation* with the AI is a separate matter: it is routed through
+SPHERE's servers and retained there. See *What SPHERE's servers receive*.
 
 **Q: Can the synthetic data be traced back to real individuals?**
 SPHERE evaluates exactly this risk using three attack models: singling-out (can you identify a unique individual?), linkability (can you link records across datasets?), and inference (can you predict a sensitive attribute?). The privacy scores reflect how resistant the synthetic data is to each attack. Higher scores mean greater protection.
 
 **Q: Does Claude ever access my real data?**
-No. In the SPHERE AI tab, Claude only ever sees the synthetic CSV and the code it writes itself. When you click "Deploy on real", the app — not Claude — copies your real CSV into the sandbox, runs `analysis.py` as a local subprocess, and immediately deletes the copy. No message is sent to the Claude API during this step.
+No. In the SPHERE AI tab, Claude only ever sees the synthetic CSV and the code it writes itself. When you click "Deploy on real", the app — not Claude — copies your real CSV into the sandbox, runs `analysis.py` as a local subprocess, and immediately deletes the copy. No message is
+sent during the deploy itself. If you then press the report button, the aggregate results
+you have reviewed on screen are sent — that is a separate, explicit step.
 
 **Q: Is it safe to use SPHERE AI with sensitive datasets?**
 While developing the analysis, Claude works only from the SPHERE twin, which by design contains no real individuals' records — so aim for good privacy scores before you rely on it. On a "Deploy on real" the script runs locally against your real file and Claude receives only the aggregate results, and only after you have read them on screen and pressed send. Your real dataset is never uploaded. See *Limits you should know about* above for what this does not guarantee.
@@ -355,7 +386,10 @@ While developing the analysis, Claude works only from the SPHERE twin, which by 
 No. Code the agent writes runs in a macOS Seatbelt sandbox with no network and no credentials, able to read exactly one data file — the twin, or during a deploy the staged real copy — and able to write only inside its own session directory. It cannot reach your home directory, cloud-synced folders (iCloud, OneDrive, Box, Dropbox), other applications' data, other SPHERE sessions, your stored API key, or external volumes. Child processes inherit the confinement. One honest caveat: the profile denies by name rather than permitting by allow-list, because Python needs parts of `~/Library` to start — so a location that is neither your data nor on the deny list is readable. `npm run test:boundary` attempts each of these escapes against the real binary.
 
 **Q: What exactly is sent to Anthropic's API?**
-In the SPHERE AI panel: conversation messages, tool results (stdout/stderr from local Python runs), figures Claude requests to view, and files you explicitly attach. The synthetic CSV's contents can be read by Claude via `pd.read_csv` inside the `python` tool. Do not use synthetic data with residual real values if you have concerns about Claude reading column contents.
+It does not go to Anthropic directly — it is routed through SPHERE's proxy, which meters and
+retains it (see *What SPHERE's servers receive*). The content is: conversation messages,
+tool results (stdout/stderr from local Python runs), figures Claude requests to view, and
+files you explicitly attach. The synthetic CSV's contents can be read by Claude via `pd.read_csv` inside the `python` tool. Do not use synthetic data with residual real values if you have concerns about Claude reading column contents.
 
 In the catalog post panel (AI auto-fill): only the filename, column names, dimensions, and aggregate scores from the synthetic file.
 
@@ -369,7 +403,10 @@ The next time you run **Sync** in the app, the stale entry is detected and the c
 Yes. Click **🌐 Update on SPHERE World** on your dataset card at any time. The existing catalog entry is updated in place — no duplicate is created.
 
 **Q: Are my API keys and tokens stored securely?**
-All keys (Anthropic, Dropbox, Zenodo) are stored in your macOS user data directory, encrypted via macOS Keychain where supported. They are never sent to SPHERE's servers.
+All keys are stored in your macOS user data directory, encrypted via macOS Keychain where
+supported. Your Dropbox and Zenodo tokens are never sent to SPHERE's servers. Your Anthropic
+key is different: it is forwarded through SPHERE's proxy on each AI request so usage can be
+metered. It passes through and is not stored there.
 
 **Q: Can I evaluate a synthetic dataset generated by another tool?**
 Yes. Use the Evaluate tab with any real CSV and any synthetic CSV, regardless of how the synthetic data was produced. It will be labelled "External synthetic" in the catalog.
@@ -380,7 +417,7 @@ Yes. Use the Evaluate tab with any real CSV and any synthetic CSV, regardless of
 
 | Action | Where | Privacy impact |
 |---|---|---|
-| Generate synthetic data | Generate tab | 100% local — nothing leaves your machine |
+| Generate synthetic data | Generate tab | Local — no network call |
 | Evaluate fidelity / privacy | Evaluate tab | 100% local |
 | Generate certificate | Evaluate tab | 100% local |
 | Upload to Dropbox / Zenodo | Share section | Synthetic data only |
@@ -389,6 +426,6 @@ Yes. Use the Evaluate tab with any real CSV and any synthetic CSV, regardless of
 | Update catalog listing | SPHERE World tab → Update | Same as Post — metadata only |
 | Delete dataset | Card → Delete button | Removes from cloud storage + catalog |
 | Sync | SPHERE World tab → Sync | Checks remote storage, removes stale entries |
-| SPHERE AI — chat session | SPHERE AI tab | Synthetic CSV + conversation sent to Claude API |
-| SPHERE AI — Deploy on real | SPHERE AI → Deploy on real | Analysis runs locally; results are then sent to Claude for the comparison |
+| SPHERE AI — chat session | SPHERE AI tab | Synthetic CSV + conversation, via SPHERE's proxy — conversation retained |
+| SPHERE AI — Deploy on real | SPHERE AI → Deploy on real | Analysis runs locally; results are sent only if you press the report button and approve them |
 | Session report | SPHERE AI → Open report | 100% local — HTML saved to sandbox folder |
