@@ -57,7 +57,7 @@ The **Generate with AI** button in the Post panel sends a prompt to Claude (Anth
 4. **Aggregate scores** — fidelity and privacy composites
 5. Whether the dataset was SPHERE-generated or external
 
-**What Claude never receives**: individual data records, cell values, your real data, or any information that could identify research participants.
+**What Claude never receives**: individual data records, cell values, your real data, or any information that could identify research participants. Note that column *names* are sent (item 2 above); in some domains a column name is itself sensitive.
 
 ### What Claude Receives — SPHERE AI Panel
 
@@ -68,11 +68,86 @@ In the SPHERE AI tab, Claude operates an agent loop over a Python sandbox. It re
 - Figures it requests to view
 - Files you explicitly attach in the chat
 
-**What Claude never receives in SPHERE AI**: the real CSV, its path, its contents, or any rows from it. The real data path is stored in the app process only and is never included in any API message.
+### What Claude receives, and what it does not
 
-**"Deploy on real" does not involve Claude at all.** When you click that button, the app copies your real CSV into the sandbox, runs `analysis.py` as a local subprocess, then immediately deletes the copy. No call is made to the Claude API during this step. Claude's job was already done — it wrote the analysis code working only on the synthetic data.
+**Claude never receives your real dataset.** The file is never uploaded, and neither
+is its path. Every tool the agent can call — `read_file`, `list_files`, `write_file`,
+`view_figure` — resolves only inside that session's own directory, and during a
+deploy the real CSV is staged into a *separate* directory that the sandbox refuses
+to open or even list.
 
-> **Sandbox enforcement:** The Python sidecar runs under a macOS Seatbelt (sandbox-exec) profile that blocks all filesystem access outside the session sandbox directory. Even if the model were to write `open('/Users/you/real.csv')`, it would receive a `PermissionError`.
+**Individual records are not sent.** The analysis is instructed, as a hard rule, to
+print aggregates only — counts, means, model coefficients, group sizes — and to
+describe data-quality problems by **column name, row position and count** rather than
+by showing the rows. If it needs to show what a problem row looks like, it uses the
+SPHERE twin, which is what the twin is for.
+
+**What is sent, and when:**
+
+| Channel | When | What |
+|---|---|---|
+| Error traceback | Automatically, if `analysis.py` fails on real data — up to 3 attempts | File name, line number and exception class only. The exception **message is dropped entirely**, and source lines are never echoed. |
+| Analysis output + figures | Only when you press **Send this and write the report** | The exact text shown to you on screen, plus the figures as rendered images. |
+
+Nothing else from a real run reaches Claude.
+
+### Before anything is sent, you see it
+
+Pressing **Review what will be sent** does not send anything. It shows you the exact
+characters that would leave the machine, plus thumbnails of every figure. Only then
+does **Send this and write the report** transmit — and it transmits precisely the
+string you were shown, not a recomputed one.
+
+Two filters run before that text is displayed, and both are described honestly:
+
+- **Identifier scrub.** SPHERE reads your real CSV in its own process, collects values
+  from identifier-like columns (MRNs, names, accession numbers), and removes any line
+  containing one. Those values never enter the interface process. If your file has no
+  such column — which is normal for de-identified extracts — the app tells you so and
+  removes nothing.
+- **Size cap.** Output is capped, and if the cap is reached the notice appears *inside*
+  the text you review, so you can see that something was cut.
+
+### Sandbox enforcement
+
+Code the agent writes never runs inside SPHERE. It runs as a separate frozen binary
+launched through `/usr/bin/sandbox-exec` in a macOS Seatbelt profile it cannot
+renegotiate. There is no unconfined fallback: if the bundled runtime is missing, the
+tool call fails rather than running unprotected. Inside that profile it:
+
+- has **no network** — TCP, UDP, DNS and unix sockets are all denied
+- has **no credentials** in its environment (an allow-list of eight variables)
+- can **write** nowhere but its own session directory
+- can **read** exactly one data file, named by literal path — the twin, or during a
+  deploy the staged real copy
+- cannot read your stored API key, other sessions' outputs, your home directory,
+  cloud-synced folders, other applications' data, or external volumes
+
+Child processes inherit the sandbox, and symlink, hard-link, firmlink and nested-sandbox
+escapes were each attempted and failed. `npm run test:boundary` runs these as a test
+suite against the real binary rather than asserting them.
+
+### Limits you should know about
+
+Honest disclosure of what this design does **not** guarantee:
+
+1. **Figures are sent as rendered images.** A per-subject plot shows one point per
+   person. This is deliberate — it is how the report compares twin against real — but
+   it means figures carry individual-level structure. Review the thumbnails.
+2. **The no-records rule is an instruction, not a lock.** The agent writes the analysis,
+   so nothing inspects the script before it runs. The identifier scrub is a backstop
+   and cannot recognise a table of per-subject numbers that prints no identifier. The
+   review step is what actually enforces this — please read it.
+3. **The sandbox denies by name, not by allow-list.** Python needs parts of `~/Library`
+   to start, so the profile permits by default and denies specific areas. Locations
+   outside both the deny list and your data are readable.
+4. **SPHERE's own code does read your real file** — to stage it, hash it, synthesise the
+   twin, and score privacy and fidelity. That is fixed application code the model never
+   influences, and it is not sandboxed. It is, however, launched with a stripped
+   environment: your API key and every other credential in the app's environment are
+   withheld from it, so a bug in that code cannot turn into a network call on your
+   account. "Claude never sees your real data" and "SPHERE never touches your real
+   data" are different statements; only the first is true.
 
 ---
 
@@ -127,7 +202,7 @@ Download a ZIP of the synthetic data and certificate for manual distribution. No
 
 ### Step 4 — Post to SPHERE World Catalog
 
-**Tab: SPHERE World (beta)**
+**Tab: SPHERE World**
 
 Once your synthetic data is hosted on Dropbox or Zenodo, you can make it discoverable in the public catalog at [sphere-world.vercel.app](https://sphere-world.vercel.app).
 
@@ -145,7 +220,7 @@ Once your synthetic data is hosted on Dropbox or Zenodo, you can make it discove
 
 ### Step 5 — Analyse with SPHERE AI
 
-**Tab: SPHERE AI (beta)**
+**Tab: SPHERE AI**
 
 SPHERE AI lets you build a rigorous data analysis by chatting with Claude — using the synthetic data as a safe stand-in throughout development. When the analysis is ready, the app runs it locally against the real data. **Claude is not involved in that final execution step at all.**
 
@@ -196,7 +271,7 @@ Click **+** in the chat input bar to attach files (PDFs, images, text/code). Att
 | **Send** | Sends your message to Claude. Press Enter (⇧Enter for new line). |
 | **■ Stop** | Interrupts Claude at the next turn boundary. |
 | **Review analysis.py** | Shows the current state of the analysis script in a dialog. |
-| **Deploy on real** | App runs `analysis.py` locally against your real CSV. Claude is not contacted. |
+| **Deploy on real** | App runs `analysis.py` locally against your real CSV, then sends the *results* to Claude for the comparison section. |
 | **Sandbox folder** | Opens the sandbox directory in Finder (scripts, figures, report). |
 | **↺ Reset** | Clears the conversation and starts a fresh session with the same synthetic CSV. |
 
@@ -252,7 +327,7 @@ Your real data (CSV)
         └─► SPHERE AI panel
               ├─► Synthetic CSV → sandbox
               │       Claude writes analysis.py via python / pip / write_file tools
-              │       All execution: local macOS Seatbelt sandbox
+              │       All execution: local subprocess on this Mac
               │       Claude API receives: conversation + synthetic CSV contents only
               │
               └─► "Deploy on real" — app-only step, NO Claude API call
@@ -274,10 +349,10 @@ SPHERE evaluates exactly this risk using three attack models: singling-out (can 
 No. In the SPHERE AI tab, Claude only ever sees the synthetic CSV and the code it writes itself. When you click "Deploy on real", the app — not Claude — copies your real CSV into the sandbox, runs `analysis.py` as a local subprocess, and immediately deletes the copy. No message is sent to the Claude API during this step.
 
 **Q: Is it safe to use SPHERE AI with sensitive datasets?**
-Yes — provided the synthetic data has good privacy scores. Claude only ever receives the synthetic CSV, which by design does not contain real individuals' records. Privacy scores above 70–80 indicate strong resistance to re-identification attacks.
+While developing the analysis, Claude works only from the SPHERE twin, which by design contains no real individuals' records — so aim for good privacy scores before you rely on it. On a "Deploy on real" the script runs locally against your real file and Claude receives only the aggregate results, and only after you have read them on screen and pressed send. Your real dataset is never uploaded. See *Limits you should know about* above for what this does not guarantee.
 
 **Q: Can Claude access files outside the sandbox?**
-No. The Python sidecar runs under a macOS Seatbelt (sandbox-exec) profile that blocks all filesystem access outside the session sandbox directory. Any attempt returns a `PermissionError`.
+No. Code the agent writes runs in a macOS Seatbelt sandbox with no network and no credentials, able to read exactly one data file — the twin, or during a deploy the staged real copy — and able to write only inside its own session directory. It cannot reach your home directory, cloud-synced folders (iCloud, OneDrive, Box, Dropbox), other applications' data, other SPHERE sessions, your stored API key, or external volumes. Child processes inherit the confinement. One honest caveat: the profile denies by name rather than permitting by allow-list, because Python needs parts of `~/Library` to start — so a location that is neither your data nor on the deny list is readable. `npm run test:boundary` attempts each of these escapes against the real binary.
 
 **Q: What exactly is sent to Anthropic's API?**
 In the SPHERE AI panel: conversation messages, tool results (stdout/stderr from local Python runs), figures Claude requests to view, and files you explicitly attach. The synthetic CSV's contents can be read by Claude via `pd.read_csv` inside the `python` tool. Do not use synthetic data with residual real values if you have concerns about Claude reading column contents.
@@ -315,5 +390,5 @@ Yes. Use the Evaluate tab with any real CSV and any synthetic CSV, regardless of
 | Delete dataset | Card → Delete button | Removes from cloud storage + catalog |
 | Sync | SPHERE World tab → Sync | Checks remote storage, removes stale entries |
 | SPHERE AI — chat session | SPHERE AI tab | Synthetic CSV + conversation sent to Claude API |
-| SPHERE AI — Deploy on real | SPHERE AI → Deploy on real | 100% local app step — Claude not contacted |
+| SPHERE AI — Deploy on real | SPHERE AI → Deploy on real | Analysis runs locally; results are then sent to Claude for the comparison |
 | Session report | SPHERE AI → Open report | 100% local — HTML saved to sandbox folder |
