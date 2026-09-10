@@ -29,7 +29,9 @@ SPHERE AI is powered by a cloud model, so it is worth being exact about what it 
 
 **Results are sent only if you ask for a written summary, and only after you have seen them.** SPHERE shows you the exact text that will be sent and waits for you to approve it. Aggregate statistics and figures are included; individual records from your real data are not.
 
-**Your conversation is routed through SPHERE.** The AI features do not talk to Anthropic directly — requests go through SPHERE's proxy so usage can be metered, and the conversation is retained with your account. This applies whether you use SPHERE credits or your own Anthropic API key. Generation, evaluation and certification make no network calls at all.
+**Your conversation is routed through SPHERE.** The AI features do not talk to Anthropic directly — requests go through SPHERE's proxy so usage can be metered, and the conversation is retained with your account. This applies whether you use SPHERE credits or your own Anthropic API key. Generation, evaluation and certification never need a network and work offline once you are signed in.
+
+**A small usage record is kept.** After each generate, evaluate, certify or share, the app records which step it was, the row and column counts, the file size and how long it took, and sends that to SPHERE with your account the next time it is online. It never contains your data, file names, paths or column names.
 
 The [Privacy Handbook](HANDBOOK.md) documents this in full, including a **Limits you should know about** section stating plainly what the design does *not* guarantee.
 
@@ -47,7 +49,7 @@ For SPHERE AI you need either SPHERE credits or your own Anthropic API key. Gene
 
 ## Installation
 
-1. Download `SPHERE-0.3.0-arm64.dmg` from the [latest release](https://github.com/statzihuai/SPHERE/releases/latest)
+1. Download the `SPHERE-<version>-arm64.dmg` from the [latest release](https://github.com/statzihuai/SPHERE/releases/latest)
 2. Open the DMG and drag **SPHERE** to your Applications folder
 3. Launch SPHERE
 

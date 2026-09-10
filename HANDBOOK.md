@@ -13,10 +13,14 @@ SPHERE (Synthetic Privacy-preserving Honest Evaluation and Release Engine) is th
 One rule governs all five steps: **your real data never leaves your machine.**
 
 Other things do leave, and you should know which. You choose when to upload a synthetic
-file (step 3) and when to post catalog metadata (step 4). And whenever you use the AI
+file (step 3) and when to post catalog metadata (step 4). Whenever you use the AI
 features (step 5), your conversation is routed through SPHERE's own servers and stored
-there — whether you are spending SPHERE credits or using your own Anthropic key. That is
-documented in *What SPHERE's servers receive* below.
+there — whether you are spending SPHERE credits or using your own Anthropic key. And after
+each generate, evaluate, certify or share, the app sends SPHERE a small usage record —
+which step, row and column counts, file size, duration — tied to your account. It never
+contains your data, file names or column names. Generation, evaluation and certification
+never need a network: once you are signed in they work offline, and the record waits on
+your Mac until a connection is available. All of this is documented in *What SPHERE's servers receive* below.
 
 ---
 
@@ -37,6 +41,11 @@ Understanding the privacy boundaries is central to using SPHERE confidently. Thi
 | Column names, dimensions & scores used in AI auto-fill | Derived from the **synthetic** file only — not the real one. |
 | analysis.py and all session figures | Written and executed entirely inside an isolated local sandbox. |
 
+Generation, evaluation and certification need no network and, once you are signed in, work
+offline. The only
+thing any of them sends is the usage record described in the next section — never your
+data, file names, paths, column names or values.
+
 ### What SPHERE's Servers Receive
 
 The AI features do not talk to Anthropic directly. Every request is routed through SPHERE's
@@ -54,7 +63,27 @@ storable form (the key is forwarded upstream on each request and not kept).
 
 Sign-in is required to use the app, so this applies to all AI use. If your work is governed
 by an agreement that forbids conversation content leaving your institution, use the
-Generate, Evaluate and Share tabs — those make no network calls to SPHERE at all.
+Generate, Evaluate and Share tabs and not the AI features — those tabs send SPHERE no
+conversation content and no data, only the usage record described next.
+
+**Usage records.** After each successful generate, evaluate, certify or share, the app saves
+a small record on this Mac and sends it to SPHERE, tied to your SPHERE account, whenever a
+connection is available. It is always on for signed-in users; there is no setting to turn it
+off. Each record contains only:
+
+- **The step** — generate, evaluate, certify or share — and, for a share, its destination
+  (Dropbox, Zenodo, an S3 bucket or the SPHERE World catalog)
+- **Row count, column count and file size**
+- **Duration** of the step, and the time it completed
+- **App version**
+
+It never contains your data, file names, paths, column names, cell values or dataset
+titles. Your account is identified by your sign-in, not by anything in the record.
+
+Generate, evaluate and certify never need a network and work offline once you are signed in.
+Signing in itself needs a connection: the first time, and again after 7 days without one.
+A record made offline waits on your Mac and is sent the next time the app is running with a connection: after your next step, at the next launch, or within 15 minutes. Sending happens in the background
+and never delays, blocks or fails the step itself.
 
 ### What Is Uploaded (Synthetic Data Only)
 
@@ -350,15 +379,20 @@ Your real data (CSV)
         │     → Claude API receives: filename,                 (metadata + public link;
         │       column names, dimensions, scores                no real data, no rows)
         │
-        └─► SPHERE AI panel
-              ├─► Synthetic CSV → sandbox
-              │       Claude writes analysis.py via python / pip / write_file tools
-              │       All execution: local subprocess on this Mac
-              │       Claude API receives: conversation + synthetic CSV contents only
-              │
-              └─► "Deploy on real" — app-only step, NO Claude API call
-                      App copies real CSV → sandbox → runs analysis.py → deletes copy
-                      Real data never transmitted; Claude is not involved in this step
+        ├─► SPHERE AI panel
+        │     ├─► Synthetic CSV → sandbox
+        │     │       Claude writes analysis.py via python / pip / write_file tools
+        │     │       All execution: local subprocess on this Mac
+        │     │       Claude API receives: conversation + synthetic CSV contents only
+        │     │
+        │     └─► "Deploy on real" — app-only step, NO Claude API call
+        │             App copies real CSV → sandbox → runs analysis.py → deletes copy
+        │             Real data never transmitted; Claude is not involved in this step
+        │
+        └─► Usage record after each generate / evaluate / certify / share
+              → saved on this Mac, sent to SPHERE when online (tied to your account):
+                step, destination, rows, columns, file size, duration, app version
+                — no data, file names, paths, column names or values
 ```
 
 ---
@@ -368,8 +402,24 @@ Your real data (CSV)
 **Q: Does SPHERE ever see my real data?**
 Your real data is read on this Mac by SPHERE's own code — to build the twin, hash it and
 score it — and is never transmitted to SPHERE's servers, Anthropic, Dropbox, Zenodo or any
-other service. Your *conversation* with the AI is a separate matter: it is routed through
-SPHERE's servers and retained there. See *What SPHERE's servers receive*.
+other service. Two other things do reach SPHERE's servers, and neither contains your data:
+your *conversation* with the AI, which is routed through SPHERE and retained there, and the
+small usage record sent after each generate, evaluate, certify or share. See *What SPHERE's
+servers receive*.
+
+**Q: Does SPHERE record how I use the app? Can I turn that off?**
+Yes. After each successful generate, evaluate, certify or share, the app saves a
+usage record on this Mac — the step, the share destination, row and column counts, file
+size, duration and app version — and sends it to SPHERE, tied to your account, whenever a
+connection is available. It is always on for signed-in users; there is no opt-out. It never
+contains your data, file names, paths, column names, cell values or dataset titles.
+
+**Q: Do generate, evaluate and certify work without an internet connection?**
+Yes, once you are signed in. None of them needs a network, and offline they run exactly as
+they do online. Signing in is the one exception: it needs a connection the first time, and
+after 7 days without one the app asks you to reconnect and sign in again. The usage record
+for each waits on your Mac until a connection is available. Uploading to Dropbox, Zenodo or
+S3, posting to the catalog and the AI features do need a connection.
 
 **Q: Can the synthetic data be traced back to real individuals?**
 SPHERE evaluates exactly this risk using three attack models: singling-out (can you identify a unique individual?), linkability (can you link records across datasets?), and inference (can you predict a sensitive attribute?). The privacy scores reflect how resistant the synthetic data is to each attack. Higher scores mean greater protection.
@@ -417,11 +467,11 @@ Yes. Use the Evaluate tab with any real CSV and any synthetic CSV, regardless of
 
 | Action | Where | Privacy impact |
 |---|---|---|
-| Generate synthetic data | Generate tab | Local — no network call |
-| Evaluate fidelity / privacy | Evaluate tab | 100% local |
-| Generate certificate | Evaluate tab | 100% local |
-| Upload to Dropbox / Zenodo | Share section | Synthetic data only |
-| Post to SPHERE World catalog | SPHERE World tab → Post | Metadata + public link only |
+| Generate synthetic data | Generate tab | Local; works offline. Usage record (no data) sent to SPHERE when online |
+| Evaluate fidelity / privacy | Evaluate tab | Local; works offline. Usage record (no data) sent to SPHERE when online |
+| Generate certificate | Evaluate tab | Local; works offline. Usage record (no data) sent to SPHERE when online |
+| Upload to Dropbox / Zenodo | Share section | Synthetic data only; usage record (no data) sent to SPHERE |
+| Post to SPHERE World catalog | SPHERE World tab → Post | Metadata + public link only; usage record sent to SPHERE |
 | AI auto-fill description | Post panel → Generate with AI | Filename, column names, dimensions, scores sent to Claude |
 | Update catalog listing | SPHERE World tab → Update | Same as Post — metadata only |
 | Delete dataset | Card → Delete button | Removes from cloud storage + catalog |
