@@ -15,16 +15,25 @@ One rule governs all five steps: **your real data never leaves your machine.**
 Other things do leave, and you should know which. You choose when to upload a synthetic
 file (step 3) and when to post catalog metadata (step 4). Whenever you use the AI
 features (step 5), your conversation is routed through SPHERE's own servers and stored
-there — whether you are spending SPHERE credits or using your own Anthropic key. And after
-each generate, evaluate, certify or share, the app sends SPHERE a small usage record, tied
-to your account: which step (and, for a share, where to), when it happened, how long it
-took (for generate and evaluate), row and column counts, file size and the app version. For
-generate and evaluate, the counts and file size are your original file's (a twin has the
-same number of rows and columns as the original); for a share they describe the synthetic
-file. The record never contains your data, file names or column names. Generation,
-evaluation and certification never need a network: once you are signed in they work
-offline, and the record waits on your Mac until you are online and signed in to the same
-account. All of this is documented in *What SPHERE's servers receive* below.
+there — whether you are spending SPHERE credits or using your own Anthropic key.
+
+Generating, evaluating and saving a certificate also need an internet connection. The work
+itself runs on your Mac, but before each of these steps starts, the app asks SPHERE's server
+to approve it. The request is tied to your account and says which step it is, the row count,
+column count and file size where the app knows them before the step starts, and the app
+version. If SPHERE can't be reached, the app keeps trying for up to about 30 seconds, then
+stops the step before any work is done and tells you why. And after each generate,
+evaluate, certify or share, the app sends SPHERE a small usage record, tied to your account:
+which step (and, for a share, where to), when it happened, how long it took (for generate
+and evaluate), row and column counts, file size and the app version. For generate and
+evaluate, the counts and file size are your original file's (a twin has the same number of
+rows and columns as the original); for a share they describe the synthetic file. Neither the
+approval request nor the record ever contains your data, file names, paths, column names or
+values. All of this is documented in *What SPHERE's servers receive* below.
+
+This describes the account edition, which you sign in to. The licence-key (pilot) edition
+has no SPHERE account: it asks for no approvals, sends no usage records, and generates,
+evaluates and certifies offline as before.
 
 ---
 
@@ -45,10 +54,10 @@ Understanding the privacy boundaries is central to using SPHERE confidently. Thi
 | Column names, dimensions & scores used in AI auto-fill | Derived from the **synthetic** file only — not the real one. |
 | analysis.py and all session figures | Written and executed entirely inside an isolated local sandbox. |
 
-Generation, evaluation and certification need no network and, once you are signed in, work
-offline. The only
-thing any of them sends is the usage record described in the next section — never your
-data, file names, paths, column names or values.
+Generation, evaluation and certification run on your Mac, but in the account edition each
+needs an internet connection, because SPHERE's server approves it before it starts. The only
+things any of them sends are that approval request and the usage record, both described in
+the next section — never your data, file names, paths, column names or values.
 
 ### What SPHERE's Servers Receive
 
@@ -68,7 +77,54 @@ storable form (the key is forwarded upstream on each request and not kept).
 Sign-in is required to use the app, so this applies to all AI use. If your work is governed
 by an agreement that forbids conversation content leaving your institution, use the
 Generate, Evaluate and Share tabs and not the AI features — those tabs send SPHERE no
-conversation content and no data, only the usage record described next.
+conversation content and no data, only the approval requests and usage records described
+next.
+
+**Step approvals.** Before a generate, an evaluate or a certificate save starts, the app asks
+SPHERE's server to approve it, and the server records the request at that moment, tied to
+your SPHERE account. The request contains only:
+
+- **A random request ID**, made fresh for each step, so a request the app has to retry is
+  recorded once
+- **The step** — generate, evaluate or certify
+- **Row count, column count and file size, where the app knows them before the step
+  starts.** In practice that is:
+    - *generate*: the size of your **original (real) file**
+    - *evaluate*: the size of your **original (real) file**
+    - *certify*: none
+- **App version**
+
+The server adds the time and your account, and sends back an approval signed by SPHERE,
+which the app checks before the step goes ahead. The request never contains your data, file
+names, paths, column names or values, and the step itself — reading your file, building the
+twin, scoring it, writing the certificate — still runs entirely on your Mac. Because the
+approval is recorded when it is given, a step that fails or is cancelled after it was approved
+still shows as approved.
+
+A certificate save is when you save a certificate, or SPHERE AI saves one:
+
+- **Generate Certificate** on the Evaluate tab, and **Save as ZIP** in the Share section (the
+  ZIP holds the certificate). Both are approved after you choose where to save and before
+  anything is written, so cancelling the save dialog sends nothing.
+- The certificate SPHERE AI saves next to the twin when you load your original data (or an
+  example) there. Doing so generates the twin, evaluates it and saves its certificate: three steps,
+  each approved as above. If the certificate's approval fails, the certificate is not saved and
+  SPHERE AI tells you why.
+
+A certificate uploaded with a Dropbox or Zenodo share needs no approval of its own; the upload
+already needs a connection. Neither does the copy of it the app keeps in its share history. Saving a SPHERE AI session report is not a certificate and needs
+no approval.
+
+If SPHERE can't be reached, or its server is briefly unavailable, the app keeps trying for up
+to about 30 seconds, so a brief drop in the connection does not stop you. The step stops
+before any work is done if there is still no approval after that, or straight away if SPHERE
+turns the request down, its answer does not check out, or your sign-in has expired. The app
+then says which: that it needs an internet connection, that your SPHERE sign-in has expired
+and you need to sign in again, or that SPHERE couldn't approve the step right now and you
+should try again in a moment.
+
+The licence-key (pilot) edition asks for no approvals: it has no SPHERE account, and its
+generate, evaluate and certify work offline as before.
 
 **Usage records.** After each successful generate, evaluate, certify or share, the app saves
 a small record on this Mac and sends it to SPHERE, tied to your SPHERE account, the next time
@@ -77,7 +133,8 @@ setting to turn it off. Each record contains only:
 
 - **A random record ID**, so a record that arrives twice is stored once
 - **The step** — generate, evaluate, certify or share — and, for a share, its destination
-  (Dropbox, Zenodo or the SPHERE World catalog). Saving a ZIP is not recorded.
+  (Dropbox, Zenodo or the SPHERE World catalog). Saving a ZIP is recorded as a certify step,
+  because the ZIP holds the certificate.
 - **The time the step completed**, and for generate and evaluate, how long it took
 - **Row count, column count and file size**, where they apply. They do not all describe
   the same file:
@@ -89,16 +146,22 @@ setting to turn it off. Each record contains only:
       column counts for the catalog
     - *certify*: none
 - **App version**
+- **The approval ID** for generate, evaluate and certify, linking the record to the step
+  approval that came before it (a share has none)
 
 It never contains your data, file names, paths, column names, cell values or dataset
 titles. Your account is identified by your sign-in, not by anything in the record.
 
-Generate, evaluate and certify never need a network and work offline once you are signed in.
-Signing in itself needs a connection: the first time, and again once 7 days have passed since
+In the account edition, generate, evaluate and certify need a connection, for the approval
+described above.
+Signing in needs a connection too: the first time, and again once 7 days have passed since
 the app last confirmed your sign-in with SPHERE. It does that when it starts with a connection
-and when you sign in; leaving the app open does not by itself restart the 7 days.
-A record made offline waits on your Mac and is sent the next time the app is running with a connection and that account signed in: after your next step, at the next launch, or within 15 minutes. Sending happens in the background
-and never delays, blocks or fails the step itself.
+and when you sign in; leaving the app open does not by itself restart the 7 days. Within
+those 7 days an app without a connection stays signed in, but it cannot generate, evaluate or
+certify until it can reach SPHERE again.
+A record that could not be sent straight away — for example because the connection dropped
+after the step was approved — waits on your Mac and is sent the next time the app is running with a connection and that account signed in: after your next step, at the next launch, or within 15 minutes. Sending the record happens in the background
+and never delays, blocks or fails the step itself; only the approval comes before the step.
 
 Each time it sends, the app picks out only the records made by the account that is signed
 in at that moment. Signing out does not
@@ -237,10 +300,10 @@ All five tabs form a single linear workflow. You do not have to complete every s
 
 1. Drag your real CSV into the app, or click to browse. The file is read locally — nothing is uploaded.
 2. Configure generation parameters (synthetic rows, noise level, random seed).
-3. Click **Generate**. The SPHERE algorithm runs on your machine and produces a synthetic CSV.
+3. Click **Generate**. In the account edition the app first asks SPHERE's server to approve the step, so you need an internet connection (see *Step approvals*); the pilot edition asks for no approval. The SPHERE algorithm then runs on your machine and produces a synthetic CSV.
 4. Download the synthetic CSV to a location of your choice.
 
-*Your real data is only ever read from disk — it is never stored by the app or transmitted anywhere.*
+*Your real data is only ever read from disk — it is never stored by the app or transmitted anywhere. In the account edition, the approval request carries only a random request ID, the step, your original file's size and the app version.*
 
 ---
 
@@ -249,13 +312,13 @@ All five tabs form a single linear workflow. You do not have to complete every s
 **Tab: Evaluate, Certify & Share**
 
 1. Load your real CSV and the synthetic CSV to evaluate (SPHERE-generated or from any other tool).
-2. Click **Evaluate**. The app computes:
+2. Click **Evaluate**. In the account edition SPHERE's server approves the step first, so this needs an internet connection. The app then computes:
    - **Fidelity scores** — how closely the synthetic data matches the real data's statistics (mean, variance, correlations, KS distance).
    - **Privacy scores** — how resistant the synthetic data is to singling-out, linkability, and inference attacks.
 3. Review the scores and the visual report.
-4. Click **Generate Certificate** to create a signed HTML evaluation report, saved to your disk.
+4. Click **Generate Certificate** to create a signed HTML evaluation report, saved to your disk. In the account edition, SPHERE's server approves the save after you choose where to save it and before the file is written, so this also needs a connection.
 
-*All computation happens on your machine. No data leaves during this step.*
+*All computation happens on your machine. No data leaves during this step: in the account edition, the approval requests carry only a random request ID, the step, your original file's size (for the evaluation) and the app version.*
 
 ---
 
@@ -272,7 +335,7 @@ Connect via OAuth (direct with Dropbox, not SPHERE). Click **Share to Dropbox** 
 Enter your Zenodo API token (stored locally via Keychain). Click **Upload to Zenodo** — the files are uploaded and a permanent DOI is generated.
 
 **Option C: Save as ZIP**
-Download a ZIP of the synthetic data and certificate for manual distribution. Nothing is uploaded.
+Save a ZIP of the synthetic data and certificate for manual distribution. Nothing is uploaded. Because the ZIP holds the certificate, in the account edition it counts as a certificate save: SPHERE's server approves it after you choose where to save it and before anything is written, so this needs a connection.
 
 ---
 
@@ -410,10 +473,16 @@ Your real data (CSV)
         │             App copies real CSV → sandbox → runs analysis.py → deletes copy
         │             Real data never transmitted; Claude is not involved in this step
         │
+        ├─► Approval before each generate / evaluate / certify (account edition)
+        │     → sent to SPHERE before the step starts; no connection = no step
+        │       (tied to your account): request ID, step, app version, and
+        │       for generate/evaluate your real file's size
+        │       — no data, file names, paths, column names or values
+        │
         └─► Usage record after each generate / evaluate / certify / share
               → saved on this Mac, sent to SPHERE when online and signed in
                 (tied to your account): record ID, step, destination, time,
-                duration, rows, columns, file size, app version
+                duration, rows, columns, file size, app version, approval ID
                 (for generate/evaluate, rows, columns and size are your real file's)
                 — no data, file names, paths, column names or values
 ```
@@ -425,32 +494,48 @@ Your real data (CSV)
 **Q: Does SPHERE ever see my real data?**
 Your real data is read on this Mac by SPHERE's own code — to build the twin, hash it and
 score it — and is never transmitted to SPHERE's servers, Anthropic, Dropbox, Zenodo or any
-other service. Two other things do reach SPHERE's servers, and neither contains your data:
-your *conversation* with the AI, which is routed through SPHERE and retained there, and the
-small usage record sent after each generate, evaluate, certify or share. See *What SPHERE's
-servers receive*.
+other service. Three other things do reach SPHERE's servers, and none contains your data:
+your *conversation* with the AI, which is routed through SPHERE and retained there; and, in
+the account edition, the approval request sent before each generate, evaluate or certificate
+save and the small usage record sent after each generate, evaluate, certify or share. See *What SPHERE's servers
+receive*.
 
 **Q: Does SPHERE record how I use the app? Can I turn that off?**
-Yes. After each successful generate, evaluate, certify or share, the app saves a
+Yes, in the account edition. Before each generate, evaluate or certificate save, SPHERE's server approves the step
+and records the approval request — a random request ID, the step, the row count, column count
+and file size where the app knows them before the step (in practice your original file's size
+for generate and evaluate, nothing for a certificate) and the app version — tied to your
+account. After each successful generate, evaluate, certify or share, the app also saves a
 usage record on this Mac — a random record ID, the step, the share destination, when it
-happened, how long it took (generate and evaluate only), row and column counts, file size
-and app version — and sends it to SPHERE, tied to your account, the next time it is online
+happened, how long it took (generate and evaluate only), row and column counts, file size,
+app version and, except for a share, the ID of the step's approval — and sends it to SPHERE,
+tied to your account, the next time it is online
 with that account signed in. For generate and evaluate, the row count, column count and file
 size are your original file's (a twin has the same number of rows and columns as the
 original); for a share they describe the synthetic file. It is always on for signed-in users; there is no opt-out.
-It never contains your data, file names, paths, column names, cell values or dataset titles.
+Neither ever contains your data, file names, paths, column names, cell values or dataset titles.
 
 **Q: Do generate, evaluate and certify work without an internet connection?**
-Yes, once you are signed in. None of them needs a network, and offline they run exactly as
-they do online. Signing in is the one exception: it needs a connection the first time, and
+Not in the account edition. The work itself still runs on your Mac, but SPHERE's server has
+to approve each generate, evaluate and certificate save (including Save as ZIP) before it starts (see *Step
+approvals*), so each needs a connection. The app keeps trying for up to about 30 seconds to
+ride out a brief drop; if it still can't reach SPHERE, the step stops before any work is done
+and the app says it needs an internet connection. Uploading to Dropbox or Zenodo, posting to
+the catalog and the AI features have always needed a connection.
+
+Signing in works as before: it needs a connection the first time, and
 again once 7 days have passed since the app last confirmed your sign-in with SPHERE (it does
 that when it starts with a connection and when you sign in; leaving the app open does not by
-itself restart the 7 days). If SPHERE starts while you are offline, the account menu shows
-how many days are left, and a banner warns you in the last two days. Once they run out, the
+itself restart the 7 days). If SPHERE starts while you are offline, you stay signed in, and
+the account menu says that generating, evaluating and certifying need a connection and how
+many days are left before you must sign in again; a banner warns you in the last two days.
+Once they run out, the
 app opens at the ordinary sign-in screen the next time it starts, and you need a connection
-to get past it. The usage record for each step waits on your Mac until you are online and signed in to
-the same account. Uploading to Dropbox or Zenodo, posting to the catalog and the AI
-features do need a connection.
+to get past it. A usage record that could not be sent straight away waits on your Mac until you are online and signed in to
+the same account.
+
+The licence-key (pilot) edition is different: it has no SPHERE account, asks for no
+approvals, and generates, evaluates and certifies offline as before.
 
 **Q: Can the synthetic data be traced back to real individuals?**
 SPHERE evaluates exactly this risk using three attack models: singling-out (can you identify a unique individual?), linkability (can you link records across datasets?), and inference (can you predict a sensitive attribute?). The privacy scores reflect how resistant the synthetic data is to each attack. Higher scores mean greater protection.
@@ -498,11 +583,12 @@ Yes. Use the Evaluate tab with any real CSV and any synthetic CSV, regardless of
 
 | Action | Where | Privacy impact |
 |---|---|---|
-| Generate synthetic data | Generate tab | Local; works offline. Usage record (no data) sent to SPHERE when online and signed in |
-| Evaluate fidelity / privacy | Evaluate tab | Local; works offline. Usage record (no data) sent to SPHERE when online and signed in |
-| Generate certificate | Evaluate tab | Local; works offline. Usage record (no data) sent to SPHERE when online and signed in |
-| Upload to Dropbox / Zenodo | Share section | Synthetic data only; usage record (no data) sent to SPHERE |
-| Post to SPHERE World catalog | SPHERE World tab → Post | Metadata + public link only; usage record sent to SPHERE |
+| Generate synthetic data | Generate tab | Runs locally. Account edition: needs a connection — SPHERE approves the step first (request ID, step, file size, app version; no data) — and a usage record (no data) is sent to SPHERE afterwards |
+| Evaluate fidelity / privacy | Evaluate tab | Runs locally. Account edition: needs a connection — SPHERE approves the step first (request ID, step, file size, app version; no data) — and a usage record (no data) is sent to SPHERE afterwards |
+| Generate certificate | Evaluate tab | Written locally. Account edition: needs a connection — SPHERE approves the save first (request ID, step, app version; no data) — and a usage record (no data) is sent to SPHERE afterwards |
+| Upload to Dropbox / Zenodo | Share section | Synthetic data and certificate only; account edition: usage record (no data) sent to SPHERE |
+| Save as ZIP | Share section | Written locally; nothing uploaded. The ZIP holds the certificate, so in the account edition it needs a connection — SPHERE approves it first, like a certificate save (request ID, step, app version; no data) — and a usage record (no data) is sent to SPHERE afterwards |
+| Post to SPHERE World catalog | SPHERE World tab → Post | Metadata + public link only; account edition: usage record sent to SPHERE |
 | AI auto-fill description | Post panel → Generate with AI | Filename, column names, dimensions, scores sent to Claude |
 | Update catalog listing | SPHERE World tab → Update | Same as Post — metadata only |
 | Delete dataset | Card → Delete button | Removes from cloud storage + catalog |

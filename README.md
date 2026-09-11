@@ -29,9 +29,11 @@ SPHERE AI is powered by a cloud model, so it is worth being exact about what it 
 
 **Results are sent only if you ask for a written summary, and only after you have seen them.** SPHERE shows you the exact text that will be sent and waits for you to approve it. Aggregate statistics and figures are included; individual records from your real data are not.
 
-**Your conversation is routed through SPHERE.** The AI features do not talk to Anthropic directly — requests go through SPHERE's proxy so usage can be metered, and the conversation is retained with your account. This applies whether you use SPHERE credits or your own Anthropic API key. Generation, evaluation and certification never need a network and work offline once you are signed in.
+**Your conversation is routed through SPHERE.** The AI features do not talk to Anthropic directly — requests go through SPHERE's proxy so usage can be metered, and the conversation is retained with your account. This applies whether you use SPHERE credits or your own Anthropic API key.
 
-**A small usage record is kept.** After each generate, evaluate, certify or share, the app records which step it was (and, for a share, where to), when it happened, how long it took (for generate and evaluate), the row and column counts and the file size where they apply, and the app version, and sends that to SPHERE with your account the next time it is online with that account signed in. For generate and evaluate the row and column counts and the file size are your original file's (a twin has the same number of rows and columns as the original); for a share they describe the synthetic file. It never contains your data, file names, paths or column names.
+**Generating, evaluating and certifying need a connection.** The work runs on your Mac, but before each generate, evaluate or certificate save (including saving a ZIP, which holds the certificate) starts, the app asks SPHERE's server to approve it. The request is tied to your account and contains only a random request ID, the step, the row and column counts and file size where the app knows them before the step (in practice your original file's size for generate and evaluate), and the app version. If SPHERE can't be reached, the app retries for up to about 30 seconds, then stops the step before any work is done and says so. Signing in still needs a connection the first time, and again once 7 days have passed since the app last confirmed your sign-in with SPHERE; within those 7 days an app without a connection stays signed in but cannot generate, evaluate or certify.
+
+**A small usage record is kept.** After each generate, evaluate, certify or share, the app records which step it was (and, for a share, where to), when it happened, how long it took (for generate and evaluate), the row and column counts and the file size where they apply, the app version and, for generate, evaluate and certify, the ID of the step's approval, and sends that to SPHERE with your account the next time it is online with that account signed in. For generate and evaluate the row and column counts and the file size are your original file's (a twin has the same number of rows and columns as the original); for a share they describe the synthetic file. It never contains your data, file names, paths or column names.
 
 The [Privacy Handbook](HANDBOOK.md) documents this in full, including a **Limits you should know about** section stating plainly what the design does *not* guarantee.
 
@@ -42,6 +44,7 @@ The [Privacy Handbook](HANDBOOK.md) documents this in full, including a **Limits
 - macOS 12 (Monterey) or later
 - Apple Silicon (M1 / M2 / M3 / M4)
 - A free SPHERE account (sign-in is required)
+- An internet connection to generate, evaluate and certify (the work runs locally; SPHERE approves each step first)
 
 For SPHERE AI you need either SPHERE credits or your own Anthropic API key. Generation, evaluation and sharing work without either.
 
