@@ -16,11 +16,15 @@ Other things do leave, and you should know which. You choose when to upload a sy
 file (step 3) and when to post catalog metadata (step 4). Whenever you use the AI
 features (step 5), your conversation is routed through SPHERE's own servers and stored
 there — whether you are spending SPHERE credits or using your own Anthropic key. And after
-each generate, evaluate, certify or share, the app sends SPHERE a small usage record —
-which step, row and column counts, file size, duration — tied to your account. It never
-contains your data, file names or column names. Generation, evaluation and certification
-never need a network: once you are signed in they work offline, and the record waits on
-your Mac until a connection is available. All of this is documented in *What SPHERE's servers receive* below.
+each generate, evaluate, certify or share, the app sends SPHERE a small usage record, tied
+to your account: which step (and, for a share, where to), when it happened, how long it
+took (for generate and evaluate), row and column counts, file size and the app version. For
+generate and evaluate, the counts and file size are your original file's (a twin has the
+same number of rows and columns as the original); for a share they describe the synthetic
+file. The record never contains your data, file names or column names. Generation,
+evaluation and certification never need a network: once you are signed in they work
+offline, and the record waits on your Mac until you are online and signed in to the same
+account. All of this is documented in *What SPHERE's servers receive* below.
 
 ---
 
@@ -67,23 +71,40 @@ Generate, Evaluate and Share tabs and not the AI features — those tabs send SP
 conversation content and no data, only the usage record described next.
 
 **Usage records.** After each successful generate, evaluate, certify or share, the app saves
-a small record on this Mac and sends it to SPHERE, tied to your SPHERE account, whenever a
-connection is available. It is always on for signed-in users; there is no setting to turn it
-off. Each record contains only:
+a small record on this Mac and sends it to SPHERE, tied to your SPHERE account, the next time
+it is online with that account signed in. It is always on for signed-in users; there is no
+setting to turn it off. Each record contains only:
 
+- **A random record ID**, so a record that arrives twice is stored once
 - **The step** — generate, evaluate, certify or share — and, for a share, its destination
-  (Dropbox, Zenodo, an S3 bucket or the SPHERE World catalog)
-- **Row count, column count and file size**
-- **Duration** of the step, and the time it completed
+  (Dropbox, Zenodo or the SPHERE World catalog). Saving a ZIP is not recorded.
+- **The time the step completed**, and for generate and evaluate, how long it took
+- **Row count, column count and file size**, where they apply. They do not all describe
+  the same file:
+    - *generate*: the row count, column count and size of your **original (real) file**.
+      The rows and columns are counted in the twin it produced, which has the same number
+      of rows and columns as the original.
+    - *evaluate*: the row count, column count and size of your **original (real) file**
+    - *share*: the synthetic file you shared — its size for Dropbox or Zenodo, its row and
+      column counts for the catalog
+    - *certify*: none
 - **App version**
 
 It never contains your data, file names, paths, column names, cell values or dataset
 titles. Your account is identified by your sign-in, not by anything in the record.
 
 Generate, evaluate and certify never need a network and work offline once you are signed in.
-Signing in itself needs a connection: the first time, and again after 7 days without one.
-A record made offline waits on your Mac and is sent the next time the app is running with a connection: after your next step, at the next launch, or within 15 minutes. Sending happens in the background
+Signing in itself needs a connection: the first time, and again once 7 days have passed since
+the app last confirmed your sign-in with SPHERE. It does that when it starts with a connection
+and when you sign in; leaving the app open does not by itself restart the 7 days.
+A record made offline waits on your Mac and is sent the next time the app is running with a connection and that account signed in: after your next step, at the next launch, or within 15 minutes. Sending happens in the background
 and never delays, blocks or fails the step itself.
+
+Each time it sends, the app picks out only the records made by the account that is signed
+in at that moment. Signing out does not
+delete records that are still waiting: they stay in the app's data folder on this Mac and
+are sent if that account signs in again. A record still unsent after about three months is
+discarded, and if more than 10,000 are waiting, the oldest are discarded first.
 
 ### What Is Uploaded (Synthetic Data Only)
 
@@ -390,8 +411,10 @@ Your real data (CSV)
         │             Real data never transmitted; Claude is not involved in this step
         │
         └─► Usage record after each generate / evaluate / certify / share
-              → saved on this Mac, sent to SPHERE when online (tied to your account):
-                step, destination, rows, columns, file size, duration, app version
+              → saved on this Mac, sent to SPHERE when online and signed in
+                (tied to your account): record ID, step, destination, time,
+                duration, rows, columns, file size, app version
+                (for generate/evaluate, rows, columns and size are your real file's)
                 — no data, file names, paths, column names or values
 ```
 
@@ -409,17 +432,25 @@ servers receive*.
 
 **Q: Does SPHERE record how I use the app? Can I turn that off?**
 Yes. After each successful generate, evaluate, certify or share, the app saves a
-usage record on this Mac — the step, the share destination, row and column counts, file
-size, duration and app version — and sends it to SPHERE, tied to your account, whenever a
-connection is available. It is always on for signed-in users; there is no opt-out. It never
-contains your data, file names, paths, column names, cell values or dataset titles.
+usage record on this Mac — a random record ID, the step, the share destination, when it
+happened, how long it took (generate and evaluate only), row and column counts, file size
+and app version — and sends it to SPHERE, tied to your account, the next time it is online
+with that account signed in. For generate and evaluate, the row count, column count and file
+size are your original file's (a twin has the same number of rows and columns as the
+original); for a share they describe the synthetic file. It is always on for signed-in users; there is no opt-out.
+It never contains your data, file names, paths, column names, cell values or dataset titles.
 
 **Q: Do generate, evaluate and certify work without an internet connection?**
 Yes, once you are signed in. None of them needs a network, and offline they run exactly as
 they do online. Signing in is the one exception: it needs a connection the first time, and
-after 7 days without one the app asks you to reconnect and sign in again. The usage record
-for each waits on your Mac until a connection is available. Uploading to Dropbox, Zenodo or
-S3, posting to the catalog and the AI features do need a connection.
+again once 7 days have passed since the app last confirmed your sign-in with SPHERE (it does
+that when it starts with a connection and when you sign in; leaving the app open does not by
+itself restart the 7 days). If SPHERE starts while you are offline, the account menu shows
+how many days are left, and a banner warns you in the last two days. Once they run out, the
+app opens at the ordinary sign-in screen the next time it starts, and you need a connection
+to get past it. The usage record for each step waits on your Mac until you are online and signed in to
+the same account. Uploading to Dropbox or Zenodo, posting to the catalog and the AI
+features do need a connection.
 
 **Q: Can the synthetic data be traced back to real individuals?**
 SPHERE evaluates exactly this risk using three attack models: singling-out (can you identify a unique individual?), linkability (can you link records across datasets?), and inference (can you predict a sensitive attribute?). The privacy scores reflect how resistant the synthetic data is to each attack. Higher scores mean greater protection.
@@ -467,9 +498,9 @@ Yes. Use the Evaluate tab with any real CSV and any synthetic CSV, regardless of
 
 | Action | Where | Privacy impact |
 |---|---|---|
-| Generate synthetic data | Generate tab | Local; works offline. Usage record (no data) sent to SPHERE when online |
-| Evaluate fidelity / privacy | Evaluate tab | Local; works offline. Usage record (no data) sent to SPHERE when online |
-| Generate certificate | Evaluate tab | Local; works offline. Usage record (no data) sent to SPHERE when online |
+| Generate synthetic data | Generate tab | Local; works offline. Usage record (no data) sent to SPHERE when online and signed in |
+| Evaluate fidelity / privacy | Evaluate tab | Local; works offline. Usage record (no data) sent to SPHERE when online and signed in |
+| Generate certificate | Evaluate tab | Local; works offline. Usage record (no data) sent to SPHERE when online and signed in |
 | Upload to Dropbox / Zenodo | Share section | Synthetic data only; usage record (no data) sent to SPHERE |
 | Post to SPHERE World catalog | SPHERE World tab → Post | Metadata + public link only; usage record sent to SPHERE |
 | AI auto-fill description | Post panel → Generate with AI | Filename, column names, dimensions, scores sent to Claude |

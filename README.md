@@ -15,7 +15,7 @@ Your real data is read locally and never uploaded. See [What leaves your Mac](#w
 - **Privacy risk assessment** — singling-out, linkability and inference attack risk, normalised against a baseline so scores are comparable across datasets
 - **SPHERE AI** — ask questions in plain language; the assistant writes and runs analysis code against the twin, then re-runs the same script on your real data locally
 - **SPHERE World** — publish a twin to a public catalog so others can find and cite it, on terms you set
-- **Sharing** — distribute twins and evaluation certificates via Dropbox, Zenodo or S3-compatible storage
+- **Sharing** — distribute twins and evaluation certificates via Dropbox or Zenodo, or save them as a ZIP to share your own way
 
 ---
 
@@ -31,7 +31,7 @@ SPHERE AI is powered by a cloud model, so it is worth being exact about what it 
 
 **Your conversation is routed through SPHERE.** The AI features do not talk to Anthropic directly — requests go through SPHERE's proxy so usage can be metered, and the conversation is retained with your account. This applies whether you use SPHERE credits or your own Anthropic API key. Generation, evaluation and certification never need a network and work offline once you are signed in.
 
-**A small usage record is kept.** After each generate, evaluate, certify or share, the app records which step it was, the row and column counts, the file size and how long it took, and sends that to SPHERE with your account the next time it is online. It never contains your data, file names, paths or column names.
+**A small usage record is kept.** After each generate, evaluate, certify or share, the app records which step it was (and, for a share, where to), when it happened, how long it took (for generate and evaluate), the row and column counts and the file size where they apply, and the app version, and sends that to SPHERE with your account the next time it is online with that account signed in. For generate and evaluate the row and column counts and the file size are your original file's (a twin has the same number of rows and columns as the original); for a share they describe the synthetic file. It never contains your data, file names, paths or column names.
 
 The [Privacy Handbook](HANDBOOK.md) documents this in full, including a **Limits you should know about** section stating plainly what the design does *not* guarantee.
 
