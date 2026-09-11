@@ -1,6 +1,6 @@
 # SPHERE
 
-**SPHERE** is a macOS desktop app for generating, evaluating and analysing privacy-preserving synthetic tabular data — a *SPHERE twin* of your real dataset that keeps its statistical structure without carrying its records.
+**SPHERE** is a macOS desktop app for generating, evaluating and analysing privacy-preserving synthetic data matrix — a *SPHERE twin* of your real dataset that keeps its statistical structure without carrying its records.
 
 Your real data is read locally and never uploaded. See [What leaves your Mac](#what-leaves-your-mac) for the precise boundary.
 
@@ -10,7 +10,7 @@ Your real data is read locally and never uploaded. See [What leaves your Mac](#w
 
 ## Features
 
-- **Synthetic data generation** — build a SPHERE twin of any tabular CSV, on your machine
+- **Synthetic data generation** — build a SPHERE twin of any data matrix CSV, on your machine
 - **Fidelity evaluation** — mean, variance, correlation structure and marginal distributions compared against the real data, scored 0–100
 - **Privacy risk assessment** — singling-out, linkability and inference attack risk, normalised against a baseline so scores are comparable across datasets
 - **SPHERE AI** — ask questions in plain language; the assistant writes and runs analysis code against the twin, then re-runs the same script on your real data locally
