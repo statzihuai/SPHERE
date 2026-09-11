@@ -61,6 +61,8 @@ the next section — never your data, file names, paths, column names or values.
 
 ### What SPHERE's Servers Receive
 
+**Your account.** Your email, name, institution or organization, organization type and role or title, and your acceptance of the SPHERE use agreement — see *Your Account and the SPHERE Use Agreement*.
+
 The AI features do not talk to Anthropic directly. Every request is routed through SPHERE's
 own proxy at `api.sphereworld.ai`, which is how usage is metered against your account. This
 applies whether you are spending SPHERE credits **or** using your own Anthropic key.
@@ -290,6 +292,26 @@ Honest disclosure of what this design does **not** guarantee:
 
 ---
 
+## Your Account and the SPHERE Use Agreement
+
+SPHERE needs a free account, whether you create one with an email address and password or sign in with Google
+or Microsoft. The desktop app and the website at app.sphereworld.ai use the same account.
+
+**Your profile.** Every account has a name, an institution or organization, an organization type (academic,
+non-profit, government, industry or other) and a role or title. The sign-up form asks for them; a Google or
+Microsoft sign-in does not, so SPHERE asks for them once after you sign in. They are kept with your account,
+and SPHERE's administrators use them to see who uses SPHERE — for example, by organization type.
+
+**The use agreement.** Before you use SPHERE you accept its use agreement once:
+
+> **RESEARCH USE ONLY — NO COMMERCIAL USE.** SPHERE and the data it produces are provided solely for non-commercial academic research. Commercial use is strictly prohibited, including training, fine-tuning, or developing any commercial machine-learning, artificial-intelligence, foundation, or generative model, and any for-profit product, service, or algorithm. Commercial use requires a separate written license.
+
+Accepting it in the app or on the website counts for both. SPHERE records that your account accepted it, which
+version, when, and the profile details you confirmed. If the agreement changes, you are asked again.
+
+In the account edition of the app (from 0.3.7), generate, evaluate and certificate saves are not approved until
+the agreement has been accepted. The pilot (licence-key) edition has no account and is not affected.
+
 ## The SPHERE Workflow
 
 All five tabs form a single linear workflow. You do not have to complete every step — use as many as are relevant to your work.
@@ -490,6 +512,9 @@ Your real data (CSV)
 ---
 
 ## Frequently Asked Questions
+
+**Q: Why does SPHERE ask for my institution and role, and for me to accept an agreement?**
+SPHERE is free for non-commercial academic research. The agreement states that limit, and your profile lets SPHERE see who uses it. You provide them once: the app and the website share the same account, so accepting on one covers the other.
 
 **Q: Does SPHERE ever see my real data?**
 Your real data is read on this Mac by SPHERE's own code — to build the twin, hash it and

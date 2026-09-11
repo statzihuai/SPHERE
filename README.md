@@ -43,7 +43,7 @@ The [Privacy Handbook](HANDBOOK.md) documents this in full, including a **Limits
 
 - macOS 12 (Monterey) or later
 - Apple Silicon (M1 / M2 / M3 / M4)
-- A free SPHERE account (sign-in is required)
+- A free SPHERE account (sign-in is required). The first time, you confirm your name, institution, organization type and role and accept the SPHERE use agreement (research use only, no commercial use); the app and the website share the account, so you do this once.
 - An internet connection to generate, evaluate and certify (the work runs locally; SPHERE approves each step first)
 
 For SPHERE AI you need either SPHERE credits or your own Anthropic API key. Generation, evaluation and sharing work without either.
