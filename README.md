@@ -56,7 +56,7 @@ For SPHERE AI you need either SPHERE credits or your own Anthropic API key. Gene
 2. Open the DMG and drag **SPHERE** to your Applications folder
 3. Launch SPHERE
 
-The app is signed and notarized by Apple. Updates are delivered automatically.
+The app is signed and notarized by Apple. Updates download automatically; click **Update ready · Restart** in SPHERE to install one.
 
 ---
 
