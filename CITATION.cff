@@ -1,0 +1,66 @@
+cff-version: 1.2.0
+message: "If you use SPHERE in your research, please cite the preprint listed under preferred-citation."
+title: "SPHERE"
+type: software
+abstract: >-
+  SPHERE is a macOS desktop app for generating, evaluating and analysing
+  privacy-preserving synthetic twins of sensitive tabular data. Your real
+  data is read locally and never uploaded.
+authors:
+  - family-names: He
+    given-names: Zihuai
+    affiliation: Stanford University
+    email: zihuai@stanford.edu
+url: "https://www.sphereworld.ai"
+repository-artifact: "https://github.com/statzihuai/SPHERE/releases/latest"
+keywords:
+  - synthetic data
+  - privacy
+  - data sharing
+  - tabular data
+  - biomedical data
+preferred-citation:
+  type: article
+  title: "Unlocking Sensitive Data with SPHERE in the Age of AI"
+  authors:
+    - family-names: He
+      given-names: Zihuai
+    - family-names: Park
+      given-names: Junyoung
+    - family-names: Pulgrossi
+      given-names: Rafael Catoia
+    - family-names: Lee
+      given-names: Justin
+    - family-names: Butler
+      given-names: Robert R.
+      name-suffix: III
+    - family-names: Weber
+      given-names: Audrey
+    - family-names: Tian
+      given-names: Lu
+    - family-names: Zhang
+      given-names: Xiang
+    - family-names: Wang
+      given-names: Julie Fangran
+    - family-names: Sha
+      given-names: Sharon
+    - family-names: Mormino
+      given-names: Elizabeth C.
+    - family-names: Wyss-Coray
+      given-names: Tony
+    - family-names: Henderson
+      given-names: Victor W.
+    - family-names: Longo
+      given-names: Frank M.
+    - family-names: Zou
+      given-names: James
+    - family-names: Desai
+      given-names: Manisha
+    - family-names: Altman
+      given-names: Russ
+  journal: bioRxiv
+  status: preprint
+  date-published: "2026-09-05"
+  year: 2026
+  doi: "10.64898/2026.09.01.748580"
+  url: "https://doi.org/10.64898/2026.09.01.748580"

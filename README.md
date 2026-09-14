@@ -1,10 +1,29 @@
 # SPHERE
 
-**SPHERE** is a macOS desktop app for generating, evaluating and analysing privacy-preserving synthetic data matrix — a *SPHERE twin* of your real dataset that keeps its statistical structure without carrying its records.
+**Privacy-preserving synthetic twins of sensitive tabular data — generated, evaluated and analysed on your Mac, without your real records leaving it.**
+
+[![DOI](https://img.shields.io/badge/DOI-10.64898%2F2026.09.01.748580-blue)](https://doi.org/10.64898/2026.09.01.748580)
+[![Latest release](https://img.shields.io/github/v/release/statzihuai/SPHERE)](https://github.com/statzihuai/SPHERE/releases/latest)
+[![License: non-commercial academic](https://img.shields.io/badge/license-non--commercial%20academic-lightgrey)](LICENSE)
+
+[Website](https://www.sphereworld.ai/?ref=github-sphere) · [Download for Mac](https://www.sphereworld.ai/download/mac?ref=github-sphere) · [Preprint](https://doi.org/10.64898/2026.09.01.748580) · [Privacy Handbook](HANDBOOK.md) · [Validation](https://www.sphereworld.ai/validation/?ref=github-sphere) · [SPHERE World catalog](https://sphere-world.vercel.app)
+
+**SPHERE** is a macOS desktop app for generating, evaluating and analysing privacy-preserving synthetic data — a *SPHERE twin* of your real data matrix that keeps its statistical structure without carrying its records.
 
 Your real data is read locally and never uploaded. See [What leaves your Mac](#what-leaves-your-mac) for the precise boundary.
 
 > **Beta.** SPHERE is in active development. Please read the [Privacy Handbook](HANDBOOK.md) before using it with sensitive data.
+
+---
+
+## Quickstart
+
+1. **Download** SPHERE for Mac from [sphereworld.ai/download/mac](https://www.sphereworld.ai/download/mac?ref=github-sphere) (always the latest release), or take the `SPHERE-<version>-arm64.dmg` from the [latest GitHub release](https://github.com/statzihuai/SPHERE/releases/latest).
+2. **Install** — open the DMG, drag **SPHERE** to your Applications folder and launch it.
+3. **Sign in** with a free SPHERE account — email, or one click with Google or Microsoft. The first time, you confirm your profile and accept the SPHERE use agreement.
+4. **Try the example data** included with the app: generate a twin, then evaluate it. When you are ready, do the same with your own CSV.
+
+You need macOS 12 or later on Apple Silicon and an internet connection — see [Requirements](#requirements). The app is signed and notarized by Apple. Updates download automatically; click **Update ready · Restart** in SPHERE to install one.
 
 ---
 
@@ -50,16 +69,6 @@ For SPHERE AI you need either SPHERE credits or your own Anthropic API key. Gene
 
 ---
 
-## Installation
-
-1. Download the `SPHERE-<version>-arm64.dmg` from the [latest release](https://github.com/statzihuai/SPHERE/releases/latest)
-2. Open the DMG and drag **SPHERE** to your Applications folder
-3. Launch SPHERE
-
-The app is signed and notarized by Apple. Updates download automatically; click **Update ready · Restart** in SPHERE to install one.
-
----
-
 ## Evaluation
 
 SPHERE produces two independent scores for every synthetic dataset:
@@ -93,9 +102,34 @@ The [`examples/`](examples/) folder contains real NHANES-derived datasets with t
 
 ---
 
+## Citation
+
+If you use SPHERE in your research, please cite the preprint:
+
+> Zihuai He, Junyoung Park, Rafael Catoia Pulgrossi, Justin Lee, Robert R. Butler III, Audrey Weber, Lu Tian, Xiang Zhang, Julie Fangran Wang, Sharon Sha, Elizabeth C. Mormino, Tony Wyss-Coray, Victor W. Henderson, Frank M. Longo, James Zou, Manisha Desai, Russ Altman. **Unlocking Sensitive Data with SPHERE in the Age of AI.** *bioRxiv* (2026). [doi:10.64898/2026.09.01.748580](https://doi.org/10.64898/2026.09.01.748580)
+
+```bibtex
+@article{He2026SPHERE,
+  title   = {Unlocking Sensitive Data with {SPHERE} in the Age of {AI}},
+  author  = {He, Zihuai and Park, Junyoung and Pulgrossi, Rafael Catoia and Lee, Justin and
+             Butler, III, Robert R. and Weber, Audrey and Tian, Lu and Zhang, Xiang and
+             Wang, Julie Fangran and Sha, Sharon and Mormino, Elizabeth C. and Wyss-Coray, Tony and
+             Henderson, Victor W. and Longo, Frank M. and Zou, James and Desai, Manisha and Altman, Russ},
+  journal = {bioRxiv},
+  year    = {2026},
+  doi     = {10.64898/2026.09.01.748580},
+  url     = {https://doi.org/10.64898/2026.09.01.748580},
+  note    = {Preprint}
+}
+```
+
+The same reference is in [`CITATION.cff`](CITATION.cff), which GitHub's **Cite this repository** button reads.
+
+---
+
 ## This repository
 
-This repo distributes the app: the handbook, examples and release binaries. The application source is not public. The "Source code" archive GitHub attaches to each release contains only the files listed here.
+This repo distributes the app: the handbook, examples, citation metadata and release binaries. The application source is not public. The "Source code" archive GitHub attaches to each release contains only the files listed here.
 
 ---
 
