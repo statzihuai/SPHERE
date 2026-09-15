@@ -48,7 +48,7 @@ SPHERE AI is powered by a cloud model, so it is worth being exact about what it 
 
 **Results are sent only if you ask for a written summary, and only after you have seen them.** SPHERE shows you the exact text that will be sent and waits for you to approve it. Aggregate statistics and figures are included; individual records from your real data are not.
 
-**Your conversation is routed through SPHERE.** The AI features do not talk to Anthropic directly — requests go through SPHERE's proxy so usage can be metered, and the conversation is retained with your account. This applies whether you use SPHERE credits or your own Anthropic API key.
+**Your conversation is routed through SPHERE.** The AI features do not talk to Anthropic directly — requests go through SPHERE's proxy so usage can be metered, and the conversation is retained with your account. This applies whether SPHERE pays for the model or you bill it to your institution's own Anthropic account.
 
 **Generating, evaluating and certifying need a connection.** The work runs on your Mac, but before each generate, evaluate or certificate save (including saving a ZIP, which holds the certificate) starts, the app asks SPHERE's server to approve it. The request is tied to your account and contains only a random request ID, the step, the row and column counts and file size where the app knows them before the step (in practice your original file's size for generate and evaluate), and the app version. If SPHERE can't be reached, the app retries for up to about 30 seconds, then stops the step before any work is done and says so. Signing in still needs a connection the first time, and again once 7 days have passed since the app last confirmed your sign-in with SPHERE; within those 7 days an app without a connection stays signed in but cannot generate, evaluate or certify.
 
@@ -65,7 +65,7 @@ The [Privacy Handbook](HANDBOOK.md) documents this in full, including a **Limits
 - A free SPHERE account (sign-in is required). The first time, you confirm your name, institution, organization type and role and accept the SPHERE use agreement (research use only, no commercial use); the app and the website share the account, so you do this once.
 - An internet connection to generate, evaluate and certify (the work runs locally; SPHERE approves each step first)
 
-For SPHERE AI you need either SPHERE credits or your own Anthropic API key. Generation, evaluation and sharing work without either.
+SPHERE AI is free for academic research during the research preview, within a monthly usage limit that resets on the 1st; commercial use needs a licence. The free usage limit may change or end with notice, and SPHERE AI can pause for everyone when the monthly research budget is reached.
 
 ---
 
