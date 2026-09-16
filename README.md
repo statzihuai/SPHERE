@@ -135,10 +135,22 @@ This repo distributes the app: the handbook, examples, citation metadata and rel
 
 ## License
 
-Copyright © 2026 Zihuai He, Stanford University. All rights reserved.
+Copyright © 2026 The Board of Trustees of the Leland Stanford Junior University.
 
-Free for non-commercial academic research and evaluation; commercial use
-requires a separate written license. A patent application relating to the
-underlying method is pending. See [LICENSE](LICENSE).
+SPHERE is licensed on Stanford's terms. [LICENSE](LICENSE) governs — the following
+is only a summary of it:
+
+- Use is granted for **internal non-commercial research only**, and the licence is
+  non-transferable.
+- Any derivative work you create is **the property of Stanford**, and is itself
+  subject to this licence.
+- **No patent rights are granted.** A patent application relating to the underlying
+  method is pending.
+- You must attach a copy of the licence to any copy of the software, to any portion
+  of it, and to any derivative work.
+- Please acknowledge SPHERE and its creators in publications, as you would any other
+  research tool.
+- Using it in a non-research capacity is a material breach; commercial use requires
+  a separate written licence.
 
 For licensing inquiries: zihuai@stanford.edu
