@@ -29,7 +29,7 @@ You need macOS 12 or later on Apple Silicon and an internet connection — see [
 
 ## Features
 
-- **Synthetic data generation** — build a SPHERE twin of any data matrix CSV, on your machine
+- **SPHERE twin generation** — build a SPHERE twin of any data matrix CSV, on your machine
 - **Fidelity evaluation** — mean, variance, correlation structure and marginal distributions compared against the real data, scored 0–100
 - **Privacy risk assessment** — singling-out, linkability and inference attack risk, normalised against a baseline so scores are comparable across datasets
 - **SPHERE AI** — ask questions in plain language; the assistant writes and runs analysis code against the twin, then re-runs the same script on your real data locally
@@ -71,7 +71,7 @@ SPHERE AI is free for academic research during the research preview, within a mo
 
 ## Evaluation
 
-SPHERE produces two independent scores for every synthetic dataset:
+SPHERE produces two independent scores for every SPHERE twin:
 
 | Score | What it measures |
 |---|---|

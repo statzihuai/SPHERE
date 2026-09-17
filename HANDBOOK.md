@@ -6,9 +6,9 @@ SPHERE (Synthetic Privacy-preserving Honest Evaluation and Release Engine) is th
 
 1. **Generate** — produce a synthetic twin of your sensitive dataset
 2. **Evaluate & Certify** — formally score fidelity and privacy, issue a certificate
-3. **Share** — upload the synthetic data to Dropbox or Zenodo
+3. **Share** — upload the SPHERE twin to Dropbox or Zenodo
 4. **Post to Catalog** — list the dataset in the SPHERE World public directory
-5. **Analyse with AI** — use Claude to develop and run analyses on the synthetic data, then apply the resulting code to your real dataset locally
+5. **Analyse with AI** — use Claude to develop and run analyses on the SPHERE twin, then apply the resulting code to your real dataset locally
 
 One rule governs all five steps: **your real data never leaves your machine.**
 
@@ -27,7 +27,7 @@ evaluate, certify or share, the app sends SPHERE a small usage record, tied to y
 which step (and, for a share, where to), when it happened, how long it took (for generate
 and evaluate), row and column counts, file size and the app version. For generate and
 evaluate, the counts and file size are your original file's (a twin has the same number of
-rows and columns as the original); for a share they describe the synthetic file. Neither the
+rows and columns as the original); for a share they describe the twin file. Neither the
 approval request nor the record ever contains your data, file names, paths, column names or
 values. All of this is documented in *What SPHERE's servers receive* below.
 
@@ -144,7 +144,7 @@ setting to turn it off. Each record contains only:
       The rows and columns are counted in the twin it produced, which has the same number
       of rows and columns as the original.
     - *evaluate*: the row count, column count and size of your **original (real) file**
-    - *share*: the synthetic file you shared — its size for Dropbox or Zenodo, its row and
+    - *share*: the twin file you shared — its size for Dropbox or Zenodo, its row and
       column counts for the catalog
     - *certify*: none
 - **App version**
@@ -175,8 +175,8 @@ discarded, and if more than 10,000 are waiting, the oldest are discarded first.
 
 When you share a dataset, **only the synthetic CSV** is uploaded — never the real data.
 
-- **Dropbox**: Synthetic CSV and certificate go to your Dropbox account via OAuth. SPHERE has no access beyond the folder it creates.
-- **Zenodo**: Synthetic CSV and certificate go to your Zenodo account via your personal API token.
+- **Dropbox**: The twin CSV and certificate go to your Dropbox account via OAuth. SPHERE has no access beyond the folder it creates.
+- **Zenodo**: The twin CSV and certificate go to your Zenodo account via your personal API token.
 
 ### What the SPHERE World Catalog Receives
 
@@ -192,9 +192,9 @@ When posting to the public catalog, the API receives metadata only — no data r
 
 The **Generate with AI** button in the Post panel sends a prompt to Claude (Anthropic API) containing:
 
-1. The synthetic CSV **filename** (not its contents)
-2. Column **names** from the synthetic header (up to 10, then "etc.")
-3. **Dimensions** — row and column counts of the synthetic file
+1. The twin CSV **filename** (not its contents)
+2. Column **names** from the twin header (up to 10, then "etc.")
+3. **Dimensions** — row and column counts of the twin file
 4. **Aggregate scores** — fidelity and privacy composites
 5. Whether the dataset was SPHERE-generated or external
 
@@ -204,7 +204,7 @@ The **Generate with AI** button in the Post panel sends a prompt to Claude (Anth
 
 In the SPHERE AI tab, Claude operates an agent loop over a Python sandbox. It receives:
 
-- The **contents of the synthetic CSV** (Claude reads it via Python tools, e.g. `pd.read_csv`)
+- The **contents of the twin CSV** (Claude reads it via Python tools, e.g. `pd.read_csv`)
 - Conversation messages and tool results (stdout/stderr from local Python execution)
 - Figures it requests to view
 - Files you explicitly attach in the chat
@@ -316,14 +316,13 @@ the agreement has been accepted. The pilot (licence-key) edition has no account 
 
 All five tabs form a single linear workflow. You do not have to complete every step — use as many as are relevant to your work.
 
-### Step 1 — Generate Synthetic Data
+### Step 1 — Generate a SPHERE Twin
 
 **Tab: Generate**
 
 1. Drag your real CSV into the app, or click to browse. The file is read locally — nothing is uploaded.
 2. Configure generation parameters (synthetic rows, noise level, random seed).
-3. Click **Generate**. In the account edition the app first asks SPHERE's server to approve the step, so you need an internet connection (see *Step approvals*); the pilot edition asks for no approval. The SPHERE algorithm then runs on your machine and produces a synthetic CSV.
-4. Download the synthetic CSV to a location of your choice.
+3. Click **Generate**. In the account edition the app first asks SPHERE's server to approve the step, so you need an internet connection (see *Step approvals*); the pilot edition asks for no approval. The SPHERE algorithm then runs on your machine and produces a SPHERE twin. 4. Download the twin CSV to a location of your choice.
 
 *Your real data is only ever read from disk — it is never stored by the app or transmitted anywhere. In the account edition, the approval request carries only a random request ID, the step, your original file's size and the app version.*
 
@@ -333,7 +332,7 @@ All five tabs form a single linear workflow. You do not have to complete every s
 
 **Tab: Evaluate, Certify & Share**
 
-1. Load your real CSV and the synthetic CSV to evaluate (SPHERE-generated or from any other tool).
+1. Load your real CSV and the twin CSV to evaluate (SPHERE-generated or from any other tool).
 2. Click **Evaluate**. In the account edition SPHERE's server approves the step first, so this needs an internet connection. The app then computes:
    - **Fidelity scores** — how closely the synthetic data matches the real data's statistics (mean, variance, correlations, KS distance).
    - **Privacy scores** — how resistant the synthetic data is to singling-out, linkability, and inference attacks.
@@ -365,7 +364,7 @@ Save a ZIP of the synthetic data and certificate for manual distribution. Nothin
 
 **Tab: SPHERE World**
 
-Once your synthetic data is hosted on Dropbox or Zenodo, you can make it discoverable in the public catalog at [sphere-world.vercel.app](https://sphere-world.vercel.app).
+Once your SPHERE twin is hosted on Dropbox or Zenodo, you can make it discoverable in the public catalog at [sphere-world.vercel.app](https://sphere-world.vercel.app).
 
 1. On your dataset card, click **🌐 Post to SPHERE World**.
 2. Fill in the title and description manually, or click **Generate with AI** to auto-fill. Set the domain and sharing terms:
@@ -383,7 +382,7 @@ Once your synthetic data is hosted on Dropbox or Zenodo, you can make it discove
 
 **Tab: SPHERE AI**
 
-SPHERE AI lets you build a rigorous data analysis by chatting with Claude — using the synthetic data as a safe stand-in throughout development. When the analysis is ready, the app runs it locally against the real data. **Claude is not involved in that final execution step at all.**
+SPHERE AI lets you build a rigorous data analysis by chatting with Claude — using the SPHERE twin as a safe stand-in throughout development. When the analysis is ready, the app runs it locally against the real data. **Claude is not involved in that final execution step at all.**
 
 #### Setup
 
@@ -392,7 +391,7 @@ SPHERE AI lets you build a rigorous data analysis by chatting with Claude — us
 
 #### How the session works
 
-1. **Load a synthetic CSV.** Click the green *Synthetic* chip and pick your CSV, or click a built-in example. An isolated sandbox folder is created and the synthetic file is placed inside it.
+1. **Load a SPHERE twin.** Click the green **SPHERE** chip and pick your CSV, or click a built-in example. An isolated sandbox folder is created and the twin file is placed inside it.
 2. **Load the real CSV (optional, needed for deploy).** Click the red *Real* chip. This path is stored in the app process only — it is never shared with Claude.
 3. **Chat with Claude.** Type a prompt and press Enter (⇧Enter for new line). Built-in starter prompts:
    - "Summarize the dataset: column types, missing values, and key distributions."
@@ -400,13 +399,13 @@ SPHERE AI lets you build a rigorous data analysis by chatting with Claude — us
    - "Propose three hypothesis-driven analyses, then run the most informative one."
 4. **Claude writes and runs code.** The agent iteratively writes Python in `analysis.py`, installs packages (`matplotlib`, `seaborn`, `statsmodels`…), and executes in the sandbox. Figures appear in the right panel. All execution is local.
 5. **Iterate.** Ask follow-ups, change chart styles, add statistical tests. Claude refines `analysis.py` across turns. Click **Review analysis.py** to inspect the current script.
-6. **Run on real data.** Once the synthetic run shows a green exit code, click **Deploy on real**. The app (not Claude):
+6. **Run on real data.** Once the twin run shows a green exit code, click **Deploy on real**. The app (not Claude):
    - Copies your real CSV into the sandbox as a temporary file.
    - Runs `analysis.py` locally as a subprocess against that copy.
    - Immediately deletes the copy when the script finishes.
-   - Shows the real-data figures alongside the synthetic figures.
+   - Shows the real-data figures alongside the twin figures.
 
-   No message is sent to Claude during this step. Claude already finished its work on the synthetic data.
+   No message is sent to Claude during this step. Claude already finished its work on the twin.
 
 7. **Save the session report.** After a successful run, a self-contained HTML report is generated containing the full conversation transcript, `analysis.py`, both figure sets, and an AI-written narrative summary. Click **Open report in sandbox** to reveal it in Finder.
 
@@ -434,7 +433,7 @@ Click **+** in the chat input bar to attach files (PDFs, images, text/code). Att
 | **Review analysis.py** | Shows the current state of the analysis script in a dialog. |
 | **Deploy on real** | App runs `analysis.py` locally against your real CSV, then sends the *results* to Claude for the comparison section. |
 | **Sandbox folder** | Opens the sandbox directory in Finder (scripts, figures, report). |
-| **↺ Reset** | Clears the conversation and starts a fresh session with the same synthetic CSV. |
+| **↺ Reset** | Clears the conversation and starts a fresh session with the same twin CSV. |
 
 #### First-launch pre-loading
 
@@ -460,7 +459,7 @@ Click **🌐 Update on SPHERE World** on any dataset card to change the title, d
 
 The app and catalog distinguish two dataset origins:
 
-- **SPHERE** badge (cardinal red): The synthetic data was generated by the SPHERE algorithm built into this app.
+- **SPHERE** badge (cardinal red): The twin was generated by the SPHERE algorithm built into this app.
 - **External synthetic** badge (grey): The data was generated by a third-party tool (e.g., SDV, synthpop, CTGAN) and then evaluated using SPHERE's metrics.
 
 This distinction is shown on dataset cards in both the app and the catalog.
@@ -475,7 +474,7 @@ Your real data (CSV)
         ▼
   [SPHERE App — on your Mac]
         │
-        ├─► Synthesis algorithm ─────────────────────► Synthetic CSV (saved locally)
+        ├─► Synthesis algorithm ─────────────────────► SPHERE twin (saved locally)
         │                                                      │
         ├─► Evaluation & scoring (local)                      ├─► Dropbox  (your account)
         │       │                                             └─► Zenodo   (your account)
@@ -486,7 +485,7 @@ Your real data (CSV)
         │       column names, dimensions, scores                no real data, no rows)
         │
         ├─► SPHERE AI panel
-        │     ├─► Synthetic CSV → sandbox
+        │     ├─► SPHERE twin → sandbox
         │     │       Claude writes analysis.py via python / pip / write_file tools
         │     │       All execution: local subprocess on this Mac
         │     │       Claude API receives: conversation + synthetic CSV contents only
@@ -537,7 +536,7 @@ app version and, except for a share, the ID of the step's approval — and sends
 tied to your account, the next time it is online
 with that account signed in. For generate and evaluate, the row count, column count and file
 size are your original file's (a twin has the same number of rows and columns as the
-original); for a share they describe the synthetic file. It is always on for signed-in users; there is no opt-out.
+original); for a share they describe the twin file. It is always on for signed-in users; there is no opt-out.
 Neither ever contains your data, file names, paths, column names, cell values or dataset titles.
 
 **Q: Do generate, evaluate and certify work without an internet connection?**
@@ -580,12 +579,12 @@ No. Code the agent writes runs in a macOS Seatbelt sandbox with no network and n
 It does not go to Anthropic directly — it is routed through SPHERE's proxy, which meters and
 retains it (see *What SPHERE's servers receive*). The content is: conversation messages,
 tool results (stdout/stderr from local Python runs), figures Claude requests to view, and
-files you explicitly attach. The synthetic CSV's contents can be read by Claude via `pd.read_csv` inside the `python` tool. Do not use synthetic data with residual real values if you have concerns about Claude reading column contents.
+files you explicitly attach. The twin CSV's contents can be read by Claude via `pd.read_csv` inside the `python` tool. Do not use synthetic data with residual real values if you have concerns about Claude reading column contents.
 
 In the catalog post panel (AI auto-fill): only the filename, column names, dimensions, and aggregate scores from the synthetic file.
 
 **Q: Who can access the data on Dropbox or Zenodo?**
-That depends on the sharing terms you set in the catalog. "Open (with citation)" means anyone with the link can access the synthetic file. "Request access" means interested parties must email you first.
+That depends on the sharing terms you set in the catalog. "Open (with citation)" means anyone with the link can access the twin file. "Request access" means interested parties must email you first.
 
 **Q: What happens if I delete the dataset from Dropbox but it's in the catalog?**
 The next time you run **Sync** in the app, the stale entry is detected and the catalog listing is removed automatically.
@@ -608,16 +607,16 @@ Yes. Use the Evaluate tab with any real CSV and any synthetic CSV, regardless of
 
 | Action | Where | Privacy impact |
 |---|---|---|
-| Generate synthetic data | Generate tab | Runs locally. Account edition: needs a connection — SPHERE approves the step first (request ID, step, file size, app version; no data) — and a usage record (no data) is sent to SPHERE afterwards |
+| Generate a SPHERE twin | Generate tab | Runs locally. Account edition: needs a connection — SPHERE approves the step first (request ID, step, file size, app version; no data) — and a usage record (no data) is sent to SPHERE afterwards |
 | Evaluate fidelity / privacy | Evaluate tab | Runs locally. Account edition: needs a connection — SPHERE approves the step first (request ID, step, file size, app version; no data) — and a usage record (no data) is sent to SPHERE afterwards |
 | Generate certificate | Evaluate tab | Written locally. Account edition: needs a connection — SPHERE approves the save first (request ID, step, app version; no data) — and a usage record (no data) is sent to SPHERE afterwards |
-| Upload to Dropbox / Zenodo | Share section | Synthetic data and certificate only; account edition: usage record (no data) sent to SPHERE |
+| Upload to Dropbox / Zenodo | Share section | Twin data and certificate only; account edition: usage record (no data) sent to SPHERE |
 | Save as ZIP | Share section | Written locally; nothing uploaded. The ZIP holds the certificate, so in the account edition it needs a connection — SPHERE approves it first, like a certificate save (request ID, step, app version; no data) — and a usage record (no data) is sent to SPHERE afterwards |
 | Post to SPHERE World catalog | SPHERE World tab → Post | Metadata + public link only; account edition: usage record sent to SPHERE |
 | AI auto-fill description | Post panel → Generate with AI | Filename, column names, dimensions, scores sent to Claude |
 | Update catalog listing | SPHERE World tab → Update | Same as Post — metadata only |
 | Delete dataset | Card → Delete button | Removes from cloud storage + catalog |
 | Sync | SPHERE World tab → Sync | Checks remote storage, removes stale entries |
-| SPHERE AI — chat session | SPHERE AI tab | Synthetic CSV + conversation, via SPHERE's proxy — conversation retained |
+| SPHERE AI — chat session | SPHERE AI tab | Twin CSV + conversation, via SPHERE's proxy — conversation retained |
 | SPHERE AI — Deploy on real | SPHERE AI → Deploy on real | Analysis runs locally; results are sent only if you press the report button and approve them |
 | Session report | SPHERE AI → Open report | 100% local — HTML saved to sandbox folder |
